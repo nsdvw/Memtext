@@ -1,3 +1,6 @@
 .login-page-content {
     margin-top: 80px;
 }
+.login-error {
+    margin-top: 10px;
+}

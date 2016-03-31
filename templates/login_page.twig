@@ -12,7 +12,8 @@
       <label for="email" class="col-xs-3 control-label">Эл.почта: </label>
       <div class="col-xs-9 col-md-6">
         <input type="email" name="loginForm[email]" id="email"
-               class="form-control" placeholder="эл.почта">
+               class="form-control" placeholder="эл.почта"
+               value="{{ loginForm.email }}">
       </div>
     </div>
 
@@ -28,17 +29,22 @@
       <div class="col-xs-offset-3 col-xs-9 col-md-6">
         <div class="checkbox">
           <label>
-            <input type="checkbox" name="loginForm[remember]"> Запомнить меня
+            <input type="checkbox" name="loginForm[remember]"
+                   {% if loginForm.remember %}checked{% endif %}> Запомнить меня
           </label>
+          <button type="submit" class="btn btn-danger pull-right">Войти</button>
         </div>
       </div>
     </div>
 
-    <div class="form-group">
+    {% if loginForm.errorMessage %}
       <div class="col-xs-offset-3 col-xs-9 col-md-6">
-        <button type="submit" class="btn btn-danger">Войти</button>
+        <div class="panel panel-danger login-error">
+          <div class="panel-heading">Ошибка:</div>
+          <div class="panel-body">{{ loginForm.errorMessage }}</div>
+        </div>
       </div>
-    </div>
+    {% endif %}
 
   </form>
 </div>

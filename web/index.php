@@ -26,12 +26,17 @@ $container['db'] = function ($c) {
     return $pdo;
 };
 
+$container['userFactory'] = function ($c) {
+    $fieldList = ['id', 'login', 'email', 'saltedHash', 'salt'];
+    return new \Memtext\Factory\UserFactory($fieldList);
+};
+
 $container['view'] = new \Slim\Views\Twig('../templates');
 $container['yandexApiKey'] = 'trnsl.1.1.20160330T163001Z.d161a299772702fe.' .
                                 '0d436c4c1cfc1713dea2aeb9d9e3f2bebae02844';
 
 $app->get('/', function (Request $request, Response $response) {
-    $response = $this->view->render($response, 'main_layout.twig');
+    $response = $this->view->render($response, 'main_page.twig');
     return $response;
 });
 

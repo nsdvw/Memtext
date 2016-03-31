@@ -1,0 +1,24 @@
+/* Stick footer to the page bottom */
+html, body {
+    height: 100%;
+}
+.wrapper-outer {
+    min-height: 100%;
+    margin-bottom: -50px;
+}
+.wrapper-inner {
+    padding-bottom: 50px;
+}
+.footer-static-bottom {
+    height: 50px;
+    background-color: #f8f8f8;
+    border-top: 1px solid #e7e7e7;
+}
+
+.container {
+    /* Set fixed width */
+    width: 970px;
+}
+.copyright {
+    padding: 12px;
+}

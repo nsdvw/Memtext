@@ -1,0 +1,45 @@
+{% extends 'main_layout.twig' %}
+
+{% block extra %}
+  <link rel="stylesheet" href="/css/login_page.css">
+{% endblock extra %}
+
+{% block content %}
+<div class="login-page-content">
+  <form action="/login" name="loginForm" method="POST" class="form-horizontal">
+    
+    <div class="form-group">
+      <label for="email" class="col-xs-3 control-label">Эл.почта: </label>
+      <div class="col-xs-9 col-md-6">
+        <input type="email" name="loginForm[email]" id="email"
+               class="form-control" placeholder="эл.почта">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password" class="col-xs-3 control-label">Пароль: </label>
+      <div class="col-xs-9 col-md-6">
+        <input type="password" name="loginForm[password]" id="password"
+               class="form-control" placeholder="пароль">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-xs-offset-3 col-xs-9 col-md-6">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="loginForm[remember]"> Запомнить меня
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-xs-offset-3 col-xs-9 col-md-6">
+        <button type="submit" class="btn btn-danger">Войти</button>
+      </div>
+    </div>
+
+  </form>
+</div>
+{% endblock content %}

@@ -9,5 +9,10 @@
     "scripts": {
         "post-install-cmd": "bash scripts/post-update-cmd.sh",
         "post-update-cmd": "bash scripts/post-update-cmd.sh"
+    },
+    "autoload": {
+        "psr-4": {
+            "Memtext\\": "app/"
+        }
     }
 }

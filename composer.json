@@ -2,6 +2,12 @@
     "require": {
         "slim/slim": "^3.3",
         "twig/twig": "^1.24",
-        "slim/twig-view": "^2.1"
+        "slim/twig-view": "^2.1",
+        "twbs/bootstrap": "^3.3",
+        "components/jquery": "^1.12"
+    },
+    "scripts": {
+        "post-install-cmd": "bash scripts/post-update-cmd.sh",
+        "post-update-cmd": "bash scripts/post-update-cmd.sh"
     }
 }

@@ -4,6 +4,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
 use \Memtext\Form\LoginForm;
 use \Memtext\Auth\LoginManager;
 use \Memtext\Mapper\UserMapper;
+use \Memtext\Mapper\TextMapper;
 
 require '../vendor/autoload.php';
 
@@ -38,19 +39,32 @@ $container['userMapper'] = function ($c) {
     return new UserMapper($c['connection']);
 };
 
+$container['textMapper'] = function ($c) {
+    return new TextMapper($c['connection']);
+};
+
 $container['loginManager'] = function ($c) {
     return new LoginManager($c['userMapper']);
 };
 
 $container['view'] = new \Slim\Views\Twig('../templates');
+$container['view']->addExtension(new \Twig_Extensions_Extension_Text());
 $container['yandexApiKey'] = 'trnsl.1.1.20160330T163001Z.d161a299772702fe.' .
                                 '0d436c4c1cfc1713dea2aeb9d9e3f2bebae02844';
 
 $app->get('/', function (Request $request, Response $response) {
+    $userTexts = [];
+    if ($this->loginManager->isLogged()) {
+        $userId = $this->loginManager->getUserId();
+        $userTexts = $this->textMapper->findAllByUserId($userId);
+    }
     $response = $this->view->render(
         $response,
         'main_page.twig',
-        ['loginManager' => $this->loginManager]
+        [
+            'loginManager' => $this->loginManager,
+            'userTexts' => $userTexts,
+        ]
     );
     return $response;
 });

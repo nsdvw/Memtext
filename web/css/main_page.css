@@ -4,6 +4,13 @@
 .register-button {
     margin-top: 12px;
 }
-.text-upload-input {
-    margin-bottom: 10px;
+.text-upload-button {
+    margin: 10px 0 20px;
+}
+.message-not-found {
+    padding: 10px;
+}
+.text-crud {
+    font-size: 1.3em;
+    margin: 0 5px;
 }

@@ -1,6 +1,8 @@
 <?php
 namespace Memtext\Mapper;
 
+use \Memtext\Model\User;
+
 class UserMapper extends AbstractMapper
 {
     public function register(User $user)

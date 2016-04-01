@@ -1,14 +1,31 @@
 {% extends 'main_layout.twig' %}
 
 {% block extra %}
-    <link rel="stylesheet" href="/css/main_page.css">
+  <link rel="stylesheet" href="/css/main_page.css">
 {% endblock extra %}
 
 {% block content %}
-<div class="main-page-content text-center">
-  <h1>Memtext помогает учиться</h1>
-  <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore omnis repellat debitis nihil, rerum numquam voluptatem repellendus pariatur perferendis voluptatum.</p>
-  <a href="/register"
-     class="register-button btn btn-danger btn-lg">Зарегистрироваться</a>
-</div>
+  {% if loginManager.isLogged() %}
+    <div class="user-profile">
+      <h1>Ваши тексты</h1>
+      <h2><small>Список текстов</small></h2>
+      <h2><small>Загрузить новый текст</small></h2>
+      <form action="" method="POST" name="textForm" class="clearfix">
+        <textarea name="textForm[content]" class="form-control text-upload-input"
+                  rows="10" placeholder="скопируйте сюда текст..."></textarea>
+        <button type="submit" class="btn btn-danger pull-right">Загрузить</button>
+      </form>
+    </div>
+  {% else %}
+    <div class="main-page-content text-center">
+      <h1>Memtext помогает учиться</h1>
+      <p class="lead">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore omnis
+        repellat debitis nihil, rerum numquam voluptatem repellendus pariatur
+        perferendis voluptatum.
+      </p>
+      <a href="/register"
+         class="register-button btn btn-danger btn-lg">Зарегистрироваться</a>
+    </div>
+  {% endif %}
 {% endblock content %}

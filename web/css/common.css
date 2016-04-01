@@ -15,6 +15,12 @@ html, body {
     border-top: 1px solid #e7e7e7;
 }
 
+.logout-button {
+    margin-top: 8px;
+}
+.logout-button:hover {
+    text-decoration: none;
+}
 .copyright {
     padding-top: 20px;
 }

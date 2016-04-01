@@ -62,7 +62,7 @@ $app->map(
         $loginForm = new LoginForm($request);
         if ($request->isPost()) {
             if ($this->loginManager->validateLoginForm($loginForm)) {
-                $this->loginManager->authorizeUser(
+                $this->loginManager->login(
                     $loginForm->getUser(),
                     $loginForm->remember
                 );
@@ -77,5 +77,10 @@ $app->map(
         return $response;
     }
 );
+
+$app->post('/logout', function (Request $request, Response $response) {
+    $this->loginManager->logout();
+    return $response->withStatus(302)->withHeader('Location', '/');
+});
 
 $app->run();

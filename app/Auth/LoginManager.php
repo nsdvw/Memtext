@@ -38,13 +38,20 @@ class LoginManager
         return $form->validatePassword($user);
     }
 
-    public function authorizeUser(User $user, $remember = true, $time = 604800)
+    public function login(User $user, $remember = true, $time = 604800)
     {
         $expires = $remember ? time() + $time : 0;
         $path = '/';
         setcookie('id', $user->id, $expires, $path);
         setcookie('hash', $user->saltedHash, $expires, $path);
         $this->loggedUser = $user;
+    }
+
+    public function logout()
+    {
+        setcookie('id', '', time() - 3600);
+        setcookie('hash', '', time() - 3600);
+        $this->loggedUser = null;
     }
 
     public function getUserID()

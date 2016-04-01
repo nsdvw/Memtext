@@ -58,7 +58,7 @@ $app->map(
         $loginForm = new LoginForm($request);
         if ($request->isPost()) {
             if ($this->loginManager->validateLoginForm($loginForm)) {
-                $app->loginManager->authorizeUser(
+                $this->loginManager->authorizeUser(
                     $loginForm->getUser(),
                     $loginForm->remember
                 );

@@ -11,7 +11,7 @@ class UserMapper extends AbstractMapper
         $sth->bindValue(':login', $user->login, \PDO::PARAM_STR);
         $sth->bindValue(':email', $user->email, \PDO::PARAM_STR);
         $sth->bindValue(':salt', $user->salt, \PDO::PARAM_STR);
-        $sth->bindValue(':saltedHash', $user->hash, \PDO::PARAM_STR);
+        $sth->bindValue(':saltedHash', $user->saltedHash, \PDO::PARAM_STR);
         $sth->execute();
         $user->id = $this->connection->lastInsertId();
     }

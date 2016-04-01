@@ -43,7 +43,7 @@ class LoginManager
         $expires = $remember ? time() + $time : 0;
         $path = '/';
         setcookie('id', $user->id, $expires, $path);
-        setcookie('hash', $user->hash, $expires, $path);
+        setcookie('hash', $user->saltedHash, $expires, $path);
         $this->loggedUser = $user;
     }
 

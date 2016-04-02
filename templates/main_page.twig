@@ -40,8 +40,15 @@
       <h2><small>Загрузить новый текст</small></h2>
       <form action="" method="POST" name="textForm">
         <textarea name="textForm[content]" class="form-control text-upload-input"
-                  rows="10" placeholder="скопируйте сюда текст..."></textarea>
+                  rows="10" placeholder="скопируйте сюда текст..."
+                  maxlength="65000" value="{{ textForm.content }}"></textarea>
         <button type="submit" class="btn btn-danger text-upload-button">Загрузить</button>
+        {% if textForm.errorMessage %}
+          <div class="panel panel-danger text-form-error">
+            <div class="panel-heading">Ошибка:</div>
+            <div class="panel-body">{{ textForm.errorMessage }}</div>
+          </div>
+        {% endif %}
       </form>
     </div>
   {% else %}

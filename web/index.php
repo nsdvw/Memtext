@@ -58,35 +58,46 @@ $container['view']->addExtension(new \Twig_Extensions_Extension_Text());
 $container['yandexApiKey'] = 'trnsl.1.1.20160330T163001Z.d161a299772702fe.' .
                                 '0d436c4c1cfc1713dea2aeb9d9e3f2bebae02844';
 
+$app->get('/', function (Request $request, Response $response) {
+    $userTexts = [];
+    if ($this->loginManager->isLogged()) {
+        $userId = $this->loginManager->getUserId();
+        $userTexts = $this->textMapper->findAllByUserId($userId);
+    }
+    $response = $this->view->render(
+        $response,
+        'main_page.twig',
+        [
+            'loginManager' => $this->loginManager,
+            'userTexts' => $userTexts,
+        ]
+    );
+    return $response;
+});
+
 $app->map(
     ['GET', 'POST'],
-    '/',
+    '/text/new',
     function (Request $request, Response $response) {
-        $userTexts = [];
+        if (!$this->loginManager->isLogged()) {
+            return $response->withStatus(302)->withHeader('Location', '/forbidden');
+        }
         $textForm = new TextForm($request);
-        if ($this->loginManager->isLogged()) {
-            if ($request->isPost()) {
-                if ($textForm->validate()) {
-                    /*$textId = $this->textMapper->save(
-                        $textForm->content,
-                        $this->loginManager->getUserId()
-                    );*/
-                    $words = $this->translatorService->parseText($textForm->content);
-                    var_dump($words);
-                    //...
-                }
+        if ($request->isPost()) {
+            if ($textForm->validate()) {
+                /*$textId = $this->textMapper->save(
+                    $textForm->content,
+                    $this->loginManager->getUserId()
+                );*/
+                $words = $this->translatorService->parseText($textForm->content);
+                var_dump($words);
+                //...
             }
-            $userId = $this->loginManager->getUserId();
-            $userTexts = $this->textMapper->findAllByUserId($userId);
         }
         $response = $this->view->render(
             $response,
-            'main_page.twig',
-            [
-                'loginManager' => $this->loginManager,
-                'userTexts' => $userTexts,
-                'textForm' => $textForm
-            ]
+            'new_text.twig',
+            ['loginManager' => $this->loginManager, 'textForm' => $textForm]
         );
         return $response;
     }

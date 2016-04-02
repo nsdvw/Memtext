@@ -6,6 +6,7 @@ use \Memtext\Form\TextForm;
 use \Memtext\Auth\LoginManager;
 use \Memtext\Mapper\UserMapper;
 use \Memtext\Mapper\TextMapper;
+use \Memtext\Service\TranslatorService;
 
 require '../vendor/autoload.php';
 
@@ -48,6 +49,10 @@ $container['loginManager'] = function ($c) {
     return new LoginManager($c['userMapper']);
 };
 
+$container['translatorService'] = function ($c) {
+    return new TranslatorService($c['textMapper']);
+};
+
 $container['view'] = new \Slim\Views\Twig('../templates');
 $container['view']->addExtension(new \Twig_Extensions_Extension_Text());
 $container['yandexApiKey'] = 'trnsl.1.1.20160330T163001Z.d161a299772702fe.' .
@@ -62,7 +67,13 @@ $app->map(
         if ($this->loginManager->isLogged()) {
             if ($request->isPost()) {
                 if ($textForm->validate()) {
-                    // ...
+                    /*$textId = $this->textMapper->save(
+                        $textForm->content,
+                        $this->loginManager->getUserId()
+                    );*/
+                    $words = $this->translatorService->parseText($textForm->content);
+                    var_dump($words);
+                    //...
                 }
             }
             $userId = $this->loginManager->getUserId();

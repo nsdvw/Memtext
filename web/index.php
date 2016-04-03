@@ -54,8 +54,12 @@ $container['translatorService'] = function ($c) {
     return new TranslatorService($c['textMapper']);
 };
 
-$container['view'] = new \Slim\Views\Twig('../templates');
-$container['view']->addExtension(new \Twig_Extensions_Extension_Text());
+$container['view'] = function ($c) {
+    $view = new \Slim\Views\Twig('../templates');
+    $view->addExtension(new \Twig_Extensions_Extension_Text());
+    $view['loginManager'] = $c['loginManager'];
+    return $view;
+};
 
 $container['yandexApiKey'] = 'trnsl.1.1.20160330T163001Z.d161a299772702fe.' .
                                 '0d436c4c1cfc1713dea2aeb9d9e3f2bebae02844';
@@ -77,16 +81,9 @@ $app->get('/', function (Request $request, Response $response) {
     $response = $this->view->render(
         $response,
         'main_page.twig',
-        [
-            'loginManager' => $this->loginManager,
-            'userTexts' => $userTexts,
-        ]
+        ['userTexts' => $userTexts]
     );
     return $response;
-});
-
-$app->get('/not_found', function ($request, $response) {
-    return $this->view->render($response, 'not_found.twig');
 });
 
 $app->map(
@@ -111,7 +108,7 @@ $app->map(
         $response = $this->view->render(
             $response,
             'new_text.twig',
-            ['loginManager' => $this->loginManager, 'textForm' => $textForm]
+            ['textForm' => $textForm]
         );
         return $response;
     }

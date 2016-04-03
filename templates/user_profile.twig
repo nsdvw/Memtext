@@ -1,4 +1,4 @@
-<div class="user-profile">
+<div class="user-profile clearfix">
   <h1>Ваши тексты</h1>
   {% if userTexts is not empty %}
     <table class="table">
@@ -29,4 +29,5 @@
   {% else %}
     <p class="bg-info message-not-found">У вас пока нет ни одного текста.</p>
   {% endif %}
+  <a href="/text/new" class="btn btn-danger pull-right">Создать новый</a>
 </div>

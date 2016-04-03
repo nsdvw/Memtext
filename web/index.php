@@ -7,6 +7,7 @@ use \Memtext\Auth\LoginManager;
 use \Memtext\Mapper\UserMapper;
 use \Memtext\Mapper\TextMapper;
 use \Memtext\Service\TranslatorService;
+use \Memtext\Handler\NotFoundHandler;
 
 require '../vendor/autoload.php';
 
@@ -55,8 +56,17 @@ $container['translatorService'] = function ($c) {
 
 $container['view'] = new \Slim\Views\Twig('../templates');
 $container['view']->addExtension(new \Twig_Extensions_Extension_Text());
+
 $container['yandexApiKey'] = 'trnsl.1.1.20160330T163001Z.d161a299772702fe.' .
                                 '0d436c4c1cfc1713dea2aeb9d9e3f2bebae02844';
+
+$container['notFoundHandler'] = function ($c) {
+    return new NotFoundHandler(
+        $c['view'],
+        function (Request $request, Response $response) use ($c) {
+            return $c['response']->withStatus(404);
+    });
+};
 
 $app->get('/', function (Request $request, Response $response) {
     $userTexts = [];
@@ -75,12 +85,16 @@ $app->get('/', function (Request $request, Response $response) {
     return $response;
 });
 
+$app->get('/not_found', function ($request, $response) {
+    return $this->view->render($response, 'not_found.twig');
+});
+
 $app->map(
     ['GET', 'POST'],
     '/text/new',
     function (Request $request, Response $response) {
         if (!$this->loginManager->isLogged()) {
-            return $response->withStatus(302)->withHeader('Location', '/forbidden');
+            return $response->withStatus(302)->withHeader('Location', '/login');
         }
         $textForm = new TextForm($request);
         if ($request->isPost()) {

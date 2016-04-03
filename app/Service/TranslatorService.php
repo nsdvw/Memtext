@@ -16,7 +16,7 @@ class TranslatorService
 
     public function parseText($text)
     {
-        $words = preg_split('/\W+/ui', $text, -1, \PREG_SPLIT_NO_EMPTY);
+        $words = preg_split('/(\'s|\'t)?\W+/ui', $text, -1, \PREG_SPLIT_NO_EMPTY);
         $words = $this->deleteLongWords($words);
         $words = array_unique($words);
         $words = $this->toLowerCase($words);

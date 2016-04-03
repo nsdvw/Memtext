@@ -2,6 +2,7 @@
 namespace Memtext\Service;
 
 use \Memtext\Mapper\TextMapper;
+use \Memtext\Mapper\WordMapper;
 use \Memtext\Helper\TextParser;
 
 class TranslatorService
@@ -26,9 +27,16 @@ class TranslatorService
     public function createVocabulary($text)
     {
         $words = $this->textParser->parse($text);
+        $savedTranslations = $this->wordMapper->fetchArrayByEng($words);
+        $missingTranslations = $this->getMissing($words, $savedTranslations);
+        // $newTranslations = $this->translator->translate();
 
         return $words;
     }
 
-    
+    private function getMissing($words, $savedTranslations)
+    {
+        $missing = array_diff_key(array_flip($words), $savedTranslations);
+        return array_keys($missing);
+    }
 }

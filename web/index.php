@@ -6,6 +6,7 @@ use \Memtext\Form\TextForm;
 use \Memtext\Auth\LoginManager;
 use \Memtext\Mapper\UserMapper;
 use \Memtext\Mapper\TextMapper;
+use \Memtext\Mapper\WordMapper;
 use \Memtext\Service\TranslatorService;
 use \Memtext\Handler\NotFoundHandler;
 use \Memtext\Helper\Pager;
@@ -58,6 +59,10 @@ $container['textMapper'] = function ($c) {
     return new TextMapper($c['connection']);
 };
 
+$container['wordMapper'] = function ($c) {
+    return new WordMapper($c['connection']);
+};
+
 $container['loginManager'] = function ($c) {
     return new LoginManager($c['userMapper']);
 };
@@ -67,7 +72,11 @@ $container['textParser'] = function ($c) {
 };
 
 $container['translatorService'] = function ($c) {
-    return new TranslatorService($c['textMapper'], $c['textParser']);
+    return new TranslatorService(
+        $c['textMapper'],
+        $c['wordMapper'],
+        $c['textParser']
+    );
 };
 
 $container['view'] = function ($c) {

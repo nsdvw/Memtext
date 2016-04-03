@@ -40,6 +40,7 @@
               {% if loginManager.isLogged() %}
                 <li>
                   <form action="/logout" method="POST" name="logoutForm" class="logout-form">
+                    {% include 'csrf_inputs.twig' %}
                     <button type="submit" name="logoutForm[logout]"
                       class="btn btn-link logout-button">Logout</button>
                   </form>

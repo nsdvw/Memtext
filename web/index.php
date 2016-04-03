@@ -10,6 +10,8 @@ use \Memtext\Service\TranslatorService;
 use \Memtext\Handler\NotFoundHandler;
 use \Memtext\Helper\Pager;
 
+session_start();
+
 require '../vendor/autoload.php';
 
 $settings['displayErrorDetails'] = true;
@@ -19,10 +21,16 @@ $settings['db']['pass'] = '';
 $settings['db']['host'] = 'localhost';
 $settings['pager']['perPage'] = 20;
 $settings['pager']['maxLinksCount'] = 6;
+$settings['yandex_api'] = 'trnsl.1.1.20160330T163001Z.d161a299772702fe.' .
+                        '0d436c4c1cfc1713dea2aeb9d9e3f2bebae02844';
 
 $app = new \Slim\App(['settings' => $settings]);
 
 $container = $app->getContainer();
+
+$container['csrf'] = function ($c) {
+    return new \Slim\Csrf\Guard;
+};
 
 $container['connection'] = function ($c) {
     $db = $c['settings']['db'];
@@ -64,9 +72,6 @@ $container['view'] = function ($c) {
     return $view;
 };
 
-$container['yandexApiKey'] = 'trnsl.1.1.20160330T163001Z.d161a299772702fe.' .
-                                '0d436c4c1cfc1713dea2aeb9d9e3f2bebae02844';
-
 $container['notFoundHandler'] = function ($c) {
     return new NotFoundHandler(
         $c['view'],
@@ -76,6 +81,15 @@ $container['notFoundHandler'] = function ($c) {
 };
 
 $app->get('/', function (Request $request, Response $response) {
+    $nameKey = $this->csrf->getTokenNameKey();
+    $valueKey = $this->csrf->getTokenValueKey();
+
+    $this->view['csrf'] = [
+        'nameKey' => $nameKey,
+        'valueKey' => $valueKey,
+        'name' => $request->getAttribute($nameKey),
+        'value' => $request->getAttribute($valueKey),
+    ];
 
     if ($this->loginManager->isLogged()) {
         $userId = $this->loginManager->getUserId();
@@ -102,7 +116,7 @@ $app->get('/', function (Request $request, Response $response) {
     }
 
     return $this->view->render($response, 'main_page.twig');
-});
+})->add($container->get('csrf'));
 
 $app->map(
     ['GET', 'POST'],

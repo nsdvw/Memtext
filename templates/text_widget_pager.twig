@@ -1,0 +1,35 @@
+{% if pager.linksCount > 1 %}
+  <div class="row">
+    <nav class="col-md-9 center-block">
+      <ul class="pagination pagination-sm">
+        {% if pager.currentPage == pager.getFirstPage() %}
+          <li class="disabled">
+            <span>&laquo;</span>
+          </li>
+        {% else %}
+          <li>
+            <a href="?page={{ pager.getPrevPage() }}">&laquo;</a>
+          </li>
+        {% endif %}
+
+        {% for i in range(pager.getFirstPage(), pager.getLastPage()) %}
+          {% if i == pager.currentPage %}
+            <li class="active"><a href="">{{ i }}</a></li>
+            {% else %}
+            <li>
+              <a href="?page={{ i }}">{{ i }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+
+        {% if pager.currentPage != pager.getLastPage() %}
+          <li>
+            <a href="?page={{ pager.getNextPage() }}">&raquo;</a>
+          </li>
+          {% else %}
+          <li class="disabled"><span>&raquo;</span></li>
+        {% endif %}
+      </ul>
+    </nav><!-- pagination -->
+  </div><!-- row -->
+{% endif %}

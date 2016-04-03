@@ -1,0 +1,32 @@
+<div class="user-profile">
+  <h1>Ваши тексты</h1>
+  {% if userTexts is not empty %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Заголовок</th>
+          <th><span class="pull-right">Смотреть/удалить</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for text in userTexts %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td class="user-text">{{ text.content|truncate(100) }}</td>
+            <td>
+              <a href="/text/delete/{{ text.id }}" class="pull-right"><!--
+                --><span class="glyphicon glyphicon-remove text-crud"></span><!--
+              --></a>
+              <a href="/text/view/{{ text.id }}" class="pull-right"><!--
+                --><span class="glyphicon glyphicon-eye-open text-crud"></span><!--
+              --></a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="bg-info message-not-found">У вас пока нет ни одного текста.</p>
+  {% endif %}
+</div>

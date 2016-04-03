@@ -9,6 +9,7 @@ use \Memtext\Mapper\TextMapper;
 use \Memtext\Service\TranslatorService;
 use \Memtext\Handler\NotFoundHandler;
 use \Memtext\Helper\Pager;
+use \Memtext\Helper\TextParser;
 
 session_start();
 
@@ -61,8 +62,12 @@ $container['loginManager'] = function ($c) {
     return new LoginManager($c['userMapper']);
 };
 
+$container['textParser'] = function ($c) {
+    return new TextParser;
+};
+
 $container['translatorService'] = function ($c) {
-    return new TranslatorService($c['textMapper']);
+    return new TranslatorService($c['textMapper'], $c['textParser']);
 };
 
 $container['view'] = function ($c) {
@@ -132,7 +137,7 @@ $app->map(
                     $textForm->content,
                     $this->loginManager->getUserId()
                 );*/
-                $words = $this->translatorService->parseText($textForm->content);
+                $words = $this->translatorService->createVocabulary($textForm->content);
                 var_dump($words);
                 //...
             }

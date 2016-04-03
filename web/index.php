@@ -8,6 +8,7 @@ use \Memtext\Mapper\UserMapper;
 use \Memtext\Mapper\TextMapper;
 use \Memtext\Service\TranslatorService;
 use \Memtext\Handler\NotFoundHandler;
+use \Memtext\Helper\Pager;
 
 require '../vendor/autoload.php';
 
@@ -16,6 +17,8 @@ $settings['db']['dbname'] = 'memtext';
 $settings['db']['user'] = 'root';
 $settings['db']['pass'] = '';
 $settings['db']['host'] = 'localhost';
+$settings['pager']['perPage'] = 20;
+$settings['pager']['maxLinksCount'] = 6;
 
 $app = new \Slim\App(['settings' => $settings]);
 
@@ -73,17 +76,32 @@ $container['notFoundHandler'] = function ($c) {
 };
 
 $app->get('/', function (Request $request, Response $response) {
-    $userTexts = [];
+
     if ($this->loginManager->isLogged()) {
         $userId = $this->loginManager->getUserId();
-        $userTexts = $this->textMapper->findAllByUserId($userId);
+        $currentPage = $request->getQueryParam('page')
+                       ? $request->getQueryParam('page') : 1;
+        $itemCount = $this->textMapper->getTextCountByUserId($userId);
+        $pagerSettings = $this->settings['pager'];
+
+        $pager = new Pager(
+            $currentPage,
+            $itemCount,
+            $pagerSettings['perPage'],
+            $pagerSettings['maxLinksCount']
+        );
+
+        $userTexts = $this->textMapper->findAllByUserId(
+            $userId,
+            $pager->perPage,
+            $pager->getOffset()
+        );
+
+        $this->view['pager'] = $pager;
+        $this->view['userTexts'] = $userTexts;
     }
-    $response = $this->view->render(
-        $response,
-        'main_page.twig',
-        ['userTexts' => $userTexts]
-    );
-    return $response;
+
+    return $this->view->render($response, 'main_page.twig');
 });
 
 $app->map(

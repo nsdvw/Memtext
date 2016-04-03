@@ -42,4 +42,13 @@ class TextMapper extends AbstractMapper
         $sth->setFetchMode(\PDO::FETCH_CLASS, '\Memtext\Model\Text');
         return $sth->fetchAll();
     }
+
+    public function getTextCountByUserId($user_id)
+    {
+        $sql = "SELECT count(*) FROM `text` WHERE user_id = :user_id";
+        $sth = $this->connection->prepare($sql);
+        $sth->bindValue(':user_id', $user_id, \PDO::PARAM_INT);
+        $sth->execute();
+        return $sth->fetchColumn();
+    }
 }

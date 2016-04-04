@@ -1,0 +1,39 @@
+{% extends 'main_layout.twig' %}
+
+{% block extra %}
+  <link rel="stylesheet" href="/css/view_dict.css">
+{% endblock extra %}
+
+{% block content %}
+  <div class="dictionary-content row">
+    <h1>Словарь</h1>
+    {% if dictionary is not empty %}
+      <table class="table">
+        <thead class="lead bg-info">
+          <tr>
+            <th class="col-xs-5">англ.</th>
+            <th class="col-xs-6">рус.</th>
+            <th class="col-xs-1"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for eng, rus in dictionary %}
+            <tr>
+              <td><strong>{{ eng }}</strong></td>
+              <td><em>{{ rus }}</em></td>
+              <td>
+                <button class="pull-right btn btn-link btn-xs" type="button"><!--
+                --><span class="glyphicon glyphicon-remove"></span><!--
+                --></button>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="bg-info message-not-found">
+        Слов к тексту не найдено. Попробуйте обновить словарь.
+      </p>
+    {% endif %}
+  </div>
+{% endblock content %}

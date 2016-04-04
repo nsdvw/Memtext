@@ -1,0 +1,21 @@
+@media (min-width: 992px) {
+    .dictionary-content {
+        width: 50%;
+    }
+}
+@media (min-width: 768px) and (max-width: 992px) {
+    .dictionary-content {
+        width: 60%;
+    }
+}
+@media (max-width: 768px) {
+    .dictionary-content {
+        width: 80%;
+    }
+}
+.message-not-found {
+    padding: 10px;
+}
+.dictionary-content {
+    margin: 20px auto;
+}

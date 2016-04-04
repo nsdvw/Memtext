@@ -147,6 +147,18 @@ $app->get('/text/view/{id}', function (Request $request, Response $response) {
     return $this->view->render($response, 'view_text.twig', ['text' => $text]);
 });
 
+$app->get('/text/dict/{id}', function (Request $request, Response $response) {
+    $textId = $request->getAttribute('id');
+    $redis = $this->redisClient;
+    $key = $redis->getPrefix() . ":{$textId}";
+    $dictionary = $redis->hgetall($key);
+    return $this->view->render(
+        $response,
+        'view_dict.twig',
+        ['dictionary' => $dictionary]
+    );
+});
+
 $app->map(
     ['GET', 'POST'],
     '/text/new',

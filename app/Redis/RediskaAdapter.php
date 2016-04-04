@@ -4,10 +4,12 @@ namespace Memtext\Redis;
 class RediskaAdapter implements RedisAdapterInterface
 {
     private $client;
+    private $prefix;
 
-    public function __construct(\Rediska $client)
+    public function __construct(\Rediska $client, $prefix = 'text')
     {
         $this->client = $client;
+        $this->prefix = $prefix;
     }
 
     public function hmget($hashName, array $fields)
@@ -28,5 +30,10 @@ class RediskaAdapter implements RedisAdapterInterface
     {
         $key = new \Rediska_Key_Hash($hashName);
         return $key->getFieldsAndValues();
+    }
+
+    public function getPrefix()
+    {
+        return $this->prefix;
     }
 }

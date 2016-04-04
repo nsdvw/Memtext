@@ -43,7 +43,8 @@ class TranslatorService
     public function saveToRedis($textId, array $words)
     {
         $client = $this->client;
-        $client->hmset("text:{$textId}", $words);
+        $key = $client->getPrefix() . ":{$textId}";
+        $client->hmset($key, $words);
     }
 
     private function getMissing($words, $savedTranslations)

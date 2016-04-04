@@ -141,6 +141,12 @@ $app->get('/', function (Request $request, Response $response) {
     return $this->view->render($response, 'main_page.twig');
 })->add($container->get('csrf'));
 
+$app->get('/text/view/{id}', function (Request $request, Response $response) {
+    $textId = $request->getAttribute('id');
+    $text = $this->textMapper->findById($textId);
+    return $this->view->render($response, 'view_text.twig', ['text' => $text]);
+});
+
 $app->map(
     ['GET', 'POST'],
     '/text/new',

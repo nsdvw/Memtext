@@ -16,7 +16,7 @@ class TextParser
             ->filterUnique()
             ->toLowerCase();
 
-        return $this->words;
+        return array_values($this->words);
     }
 
     private function splitToWords()

@@ -13,6 +13,7 @@ use \Memtext\Helper\Pager;
 use \Memtext\Helper\TextParser;
 use \Memtext\Helper\YandexTranslator;
 use \Memtext\Redis\RediskaAdapter;
+use \Memtext\Model\Text;
 
 session_start();
 
@@ -47,16 +48,6 @@ $container['connection'] = function ($c) {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     return $pdo;
-};
-
-$container['userFactory'] = function ($c) {
-    $fieldList = ['id', 'login', 'email', 'saltedHash', 'salt'];
-    return new \Memtext\Factory\UserFactory($fieldList);
-};
-
-$container['textFactory'] = function ($c) {
-    $fieldList = ['id', 'content', 'user_id'];
-    return new \Memtext\Factory\TextFactory($fieldList);
 };
 
 $container['userMapper'] = function ($c) {
@@ -160,10 +151,9 @@ $app->map(
         $textForm = new TextForm($request);
         if ($request->isPost()) {
             if ($textForm->validate()) {
-                $text = $this->textFactory->create([
-                    'content'=>$textForm->content,
-                    'user_id'=>$this->loginManager->getUserId(),
-                ]);
+                $text = new Text;
+                $text->content = $textForm->content;
+                $text->user_id = $this->loginManager->getUserId();
                 $this->textMapper->save($text);
                 $words = $this->translatorService->createVocabulary($textForm->content);
                 $this->translatorService->saveToRedis($text->id, $words);

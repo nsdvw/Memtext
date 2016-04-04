@@ -4,6 +4,7 @@ namespace Memtext\Service;
 use \Memtext\Mapper\TextMapper;
 use \Memtext\Mapper\WordMapper;
 use \Memtext\Helper\TextParser;
+use \Memtext\Helper\TranslatorInterface as Translator;
 
 class TranslatorService
 {
@@ -15,12 +16,14 @@ class TranslatorService
     public function __construct(
         TextMapper $textMapper,
         WordMapper $wordMapper,
-        TextParser $textParser
+        TextParser $textParser,
+        Translator $translator
         /*, $redisClient*/
     ) {
         $this->textMapper = $textMapper;
         $this->textParser = $textParser;
         $this->wordMapper = $wordMapper;
+        $this->translator = $translator;
         // $this->redisClient = $redisClient;
     }
 
@@ -29,9 +32,11 @@ class TranslatorService
         $words = $this->textParser->parse($text);
         $savedTranslations = $this->wordMapper->fetchArrayByEng($words);
         $missingTranslations = $this->getMissing($words, $savedTranslations);
-        // $newTranslations = $this->translator->translate();
+        $newTranslations = $this->translator->translate($missingTranslations);
+        $newWords = array_combine($missingTranslations, $newTranslations);
+        $this->wordMapper->save($newWords);
 
-        return $words;
+        return array_merge($savedTranslations, $newWords);
     }
 
     private function getMissing($words, $savedTranslations)

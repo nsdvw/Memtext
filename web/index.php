@@ -11,6 +11,7 @@ use \Memtext\Service\TranslatorService;
 use \Memtext\Handler\NotFoundHandler;
 use \Memtext\Helper\Pager;
 use \Memtext\Helper\TextParser;
+use \Memtext\Helper\YandexTranslator;
 
 session_start();
 
@@ -23,8 +24,9 @@ $settings['db']['pass'] = '';
 $settings['db']['host'] = 'localhost';
 $settings['pager']['perPage'] = 20;
 $settings['pager']['maxLinksCount'] = 6;
-$settings['yandex_api'] = 'trnsl.1.1.20160330T163001Z.d161a299772702fe.' .
+$settings['yandex']['key'] = 'trnsl.1.1.20160330T163001Z.d161a299772702fe.' .
                         '0d436c4c1cfc1713dea2aeb9d9e3f2bebae02844';
+$settings['yandex']['api'] = 'https://translate.yandex.net/api/v1.5/tr.json/translate';
 
 $app = new \Slim\App(['settings' => $settings]);
 
@@ -67,15 +69,19 @@ $container['loginManager'] = function ($c) {
     return new LoginManager($c['userMapper']);
 };
 
-$container['textParser'] = function ($c) {
-    return new TextParser;
+$container['textParser'] = new TextParser;
+
+$container['yandexTranslator'] = function ($c) {
+    $settings = $c['settings']['yandex'];
+    return new YandexTranslator($settings['api'], $settings['key']);
 };
 
 $container['translatorService'] = function ($c) {
     return new TranslatorService(
         $c['textMapper'],
         $c['wordMapper'],
-        $c['textParser']
+        $c['textParser'],
+        $c['yandexTranslator']
     );
 };
 

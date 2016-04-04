@@ -1,19 +1,19 @@
 <?php
 namespace Memtext\Factory;
 
-use Memtext\Model\User;
+use Memtext\Model\Text;
 
-class UserFactory extends AbstractFactory
+class TextFactory extends AbstractFactory
 {
     public function create($fields = [])
     {
-        $user = new User;
+        $text = new Text;
         foreach ($fields as $fieldName => $fieldValue) {
             if (!in_array($fieldName, $this->fieldList)) {
                 continue;
             }
-            $user->$fieldName = $fieldValue;
+            $text->$fieldName = $fieldValue;
         }
-        return $user;
+        return $text;
     }
 }

@@ -12,6 +12,7 @@ use \Memtext\Handler\NotFoundHandler;
 use \Memtext\Helper\Pager;
 use \Memtext\Helper\TextParser;
 use \Memtext\Helper\YandexTranslator;
+use \Memtext\Redis\RediskaAdapter;
 
 session_start();
 
@@ -53,6 +54,11 @@ $container['userFactory'] = function ($c) {
     return new \Memtext\Factory\UserFactory($fieldList);
 };
 
+$container['textFactory'] = function ($c) {
+    $fieldList = ['id', 'content', 'user_id'];
+    return new \Memtext\Factory\TextFactory($fieldList);
+};
+
 $container['userMapper'] = function ($c) {
     return new UserMapper($c['connection']);
 };
@@ -81,8 +87,14 @@ $container['translatorService'] = function ($c) {
         $c['textMapper'],
         $c['wordMapper'],
         $c['textParser'],
-        $c['yandexTranslator']
+        $c['yandexTranslator'],
+        $c['redisClient']
     );
+};
+
+$container['redisClient'] = function ($c) {
+    $rediska = new \Rediska();
+    return new RediskaAdapter($rediska);
 };
 
 $container['view'] = function ($c) {
@@ -148,13 +160,13 @@ $app->map(
         $textForm = new TextForm($request);
         if ($request->isPost()) {
             if ($textForm->validate()) {
-                /*$textId = $this->textMapper->save(
-                    $textForm->content,
-                    $this->loginManager->getUserId()
-                );*/
+                $text = $this->textFactory->create([
+                    'content'=>$textForm->content,
+                    'user_id'=>$this->loginManager->getUserId(),
+                ]);
+                $this->textMapper->save($text);
                 $words = $this->translatorService->createVocabulary($textForm->content);
-                var_dump($words);
-                //...
+                $this->translatorService->saveToRedis($text->id, $words);
             }
         }
         $response = $this->view->render(

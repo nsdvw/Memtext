@@ -5,6 +5,7 @@ use \Memtext\Mapper\TextMapper;
 use \Memtext\Mapper\WordMapper;
 use \Memtext\Helper\TextParser;
 use \Memtext\Helper\TranslatorInterface as Translator;
+use \Memtext\Redis\RedisAdapterInterface as Redis;
 
 class TranslatorService
 {
@@ -17,14 +18,14 @@ class TranslatorService
         TextMapper $textMapper,
         WordMapper $wordMapper,
         TextParser $textParser,
-        Translator $translator
-        /*, $redisClient*/
+        Translator $translator,
+        Redis $client
     ) {
         $this->textMapper = $textMapper;
         $this->textParser = $textParser;
         $this->wordMapper = $wordMapper;
         $this->translator = $translator;
-        // $this->redisClient = $redisClient;
+        $this->client = $client;
     }
 
     public function createVocabulary($text)
@@ -37,6 +38,12 @@ class TranslatorService
         $this->wordMapper->save($newWords);
 
         return array_merge($savedTranslations, $newWords);
+    }
+
+    public function saveToRedis($textId, array $words)
+    {
+        $client = $this->client;
+        $client->hmset("text:{$textId}", $words);
     }
 
     private function getMissing($words, $savedTranslations)

@@ -29,7 +29,7 @@ class WordMapper extends AbstractMapper
     public function fetchArrayByEng(array $eng)
     {
         $arrayOfObjects = $this->findByEng($eng);
-        $arrayOfSrings = [];
+        $arrayOfStrings = [];
         foreach ($arrayOfObjects as $wordObject) {
             $arrayOfStrings[$wordObject->eng] = $wordObject->rus;
         }

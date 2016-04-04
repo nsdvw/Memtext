@@ -19,9 +19,11 @@
             <td>{{ loop.index }}</td>
             <td class="user-text">{{ text.title|truncate(100) }}</td>
             <td>
-              <a href="/text/delete/{{ text.id }}" class="pull-right"><!--
-                --><span class="glyphicon glyphicon-remove text-crud"></span><!--
-              --></a>
+              <form action="/text/delete/{{ text.id }}" method="POST" name="deleteForm">
+                <button class="pull-right btn btn-link btn-xs" type="submit"><!--
+                  --><span class="glyphicon glyphicon-remove text-crud"></span><!--
+                --></button>
+              </form>
               <a href="/text/view/{{ text.id }}" class="pull-right"><!--
                 --><span class="glyphicon glyphicon-eye-open text-crud"></span><!--
               --></a>

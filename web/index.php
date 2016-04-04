@@ -147,7 +147,17 @@ $app->get('/text/view/{id}', function (Request $request, Response $response) {
     return $this->view->render($response, 'view_text.twig', ['text' => $text]);
 });
 
-$app->get('/text/dict/{id}', function (Request $request, Response $response) {
+$app->post('/text/delete/{id}', function (Request $request, Response $response) {
+    $textId = $request->getAttribute('id');
+    $authorId = $this->textMapper->getAuthorId($textId);
+    if ($this->loginManager->isOwner($authorId)) {
+        $this->textMapper->delete($textId);
+        return $response->withStatus(302)->withHeader('Location', '/');
+    }
+    return $this->view->render($response, 'forbidden.twig');
+});
+
+$app->get('/dict/{id}', function (Request $request, Response $response) {
     $textId = $request->getAttribute('id');
     $redis = $this->redisClient;
     $key = $redis->getPrefix() . ":{$textId}";

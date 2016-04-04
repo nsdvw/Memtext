@@ -1,3 +1,6 @@
 .text-upload-button {
     margin: 10px 0 20px;
 }
+.text-upload-title, .text-upload-input {
+    margin: 10px 0;
+}

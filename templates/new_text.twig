@@ -7,10 +7,13 @@
 {% block content %}
   <h1><small>Загрузить новый текст</small></h1>
   <form action="" method="POST" name="textForm">
+    <input type="text" name="textForm[title]" placeholder="заголовок..."
+           class="form-control text-upload-title">
     <textarea name="textForm[content]" class="form-control text-upload-input"
               rows="10" placeholder="скопируйте сюда текст..."
               maxlength="65000" value="{{ textForm.content }}"></textarea>
-    <button type="submit" class="btn btn-danger text-upload-button">Загрузить</button>
+    <button type="submit"
+            class="btn btn-danger text-upload-button">Загрузить</button>
     {% if textForm.errorMessage %}
       <div class="panel panel-danger text-form-error">
         <div class="panel-heading">Ошибка:</div>

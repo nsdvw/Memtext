@@ -5,6 +5,7 @@ class Text extends AbstractModel
 {
     private $id;
     private $content;
+    private $title;
     private $user_id;
 
     public function getId()
@@ -15,6 +16,11 @@ class Text extends AbstractModel
     public function getContent()
     {
         return $this->content;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
     }
 
     public function getUser_id()
@@ -30,6 +36,11 @@ class Text extends AbstractModel
     public function setContent($content)
     {
         $this->content = $content;
+    }
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
     }
 
     public function setUser_id($user_id)

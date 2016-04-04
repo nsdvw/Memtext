@@ -7,10 +7,11 @@ class TextMapper extends AbstractMapper
 {
     public function save(Text $text)
     {
-        $sql = "INSERT INTO `text` (content, user_id)
-                VALUES (:content, :user_id)";
+        $sql = "INSERT INTO `text` (content, title, user_id)
+                VALUES (:content, :title, :user_id)";
         $sth = $this->connection->prepare($sql);
         $sth->bindValue(':content', $text->content, \PDO::PARAM_STR);
+        $sth->bindValue(':title', $text->title, \PDO::PARAM_STR);
         $sth->bindValue(':user_id', $text->user_id, \PDO::PARAM_INT);
         $sth->execute();
         $text->id = $this->connection->lastInsertId();
@@ -18,7 +19,7 @@ class TextMapper extends AbstractMapper
 
     public function findById($id)
     {
-        $sql = "SELECT id, content, user_id
+        $sql = "SELECT id, content, title, user_id
                 FROM `text`
                 WHERE id=:id";
         $sth = $this->connection->prepare($sql);
@@ -30,7 +31,7 @@ class TextMapper extends AbstractMapper
 
     public function findAllByUserId($user_id, $rows = 20, $offset = 0)
     {
-        $sql = "SELECT id, content, user_id
+        $sql = "SELECT id, content, title, user_id
                 FROM `text`
                 WHERE user_id=:user_id
                 LIMIT :offset, :rows";

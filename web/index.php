@@ -153,6 +153,7 @@ $app->map(
             if ($textForm->validate()) {
                 $text = new Text;
                 $text->content = $textForm->content;
+                $text->title = $textForm->title;
                 $text->user_id = $this->loginManager->getUserId();
                 $this->textMapper->save($text);
                 $words = $this->translatorService->createVocabulary($textForm->content);

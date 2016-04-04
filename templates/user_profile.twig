@@ -17,7 +17,7 @@
         {% for text in userTexts %}
           <tr>
             <td>{{ loop.index }}</td>
-            <td class="user-text">{{ text.content|truncate(100) }}</td>
+            <td class="user-text">{{ text.title|truncate(100) }}</td>
             <td>
               <a href="/text/delete/{{ text.id }}" class="pull-right"><!--
                 --><span class="glyphicon glyphicon-remove text-crud"></span><!--

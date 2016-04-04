@@ -52,4 +52,21 @@ class TextMapper extends AbstractMapper
         $sth->execute();
         return $sth->fetchColumn();
     }
+
+    public function getAuthorId($textId)
+    {
+        $sql = "SELECT user_id FROM `text` WHERE id=:id";
+        $sth = $this->connection->prepare($sql);
+        $sth->bindValue(':id', $textId, \PDO::PARAM_INT);
+        $sth->execute();
+        return $sth->fetchColumn();
+    }
+
+    public function delete($textId)
+    {
+        $sql = "DELETE FROM `text` WHERE id=:id";
+        $sth = $this->connection->prepare($sql);
+        $sth->bindValue(':id', $textId, \PDO::PARAM_INT);
+        $sth->execute();
+    }
 }

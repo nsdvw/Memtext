@@ -5,13 +5,13 @@ use \Memtext\Model\Text;
 
 class TextMapper extends AbstractMapper
 {
-    public function save(Text $text, User $user)
+    public function save(Text $text)
     {
         $sql = "INSERT INTO `text` (content, user_id)
                 VALUES (:content, :user_id)";
         $sth = $this->connection->prepare($sql);
         $sth->bindValue(':content', $text->content, \PDO::PARAM_STR);
-        $sth->bindValue(':user_id', $user->id, \PDO::PARAM_INT);
+        $sth->bindValue(':user_id', $text->user_id, \PDO::PARAM_INT);
         $sth->execute();
         $text->id = $this->connection->lastInsertId();
     }

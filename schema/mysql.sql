@@ -10,6 +10,7 @@ CREATE TABLE `user`
 CREATE TABLE `text`
 (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `title` VARCHAR(255) NOT NULL,
     `content` TEXT NOT NULL,
     `user_id` INT UNSIGNED NOT NULL,
     FOREIGN KEY (`user_id`) REFERENCES `user`(`id`)

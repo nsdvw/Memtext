@@ -8,9 +8,9 @@ class WordMapper extends AbstractMapper
         $sql = "INSERT INTO word (eng, rus) VALUES (:eng, :rus)";
         $sth = $this->connection->prepare($sql);
         $this->connection->beginTransaction();
-        foreach ($words as $word) {
-            $sth->bindValue(':eng', $word->eng, \PDO::PARAM_STR);
-            $sth->bindValue(':rus', $word->rus, \PDO::PARAM_STR);
+        foreach ($words as $eng => $rus) {
+            $sth->bindValue(':eng', $eng, \PDO::PARAM_STR);
+            $sth->bindValue(':rus', $rus, \PDO::PARAM_STR);
             $sth->execute();
         }
         $this->connection->commit();

@@ -2,13 +2,14 @@
 
 {% block extra %}
   <link rel="stylesheet" href="/css/view_dict.css">
+  <script defer src="/js/dict-update-form.js"></script>
 {% endblock extra %}
 
 {% block content %}
   <div class="dictionary-content row">
     <h1>Словарь</h1>
     {% if dictionary is not empty %}
-      <table class="table">
+      <table class="table dictionary-table">
         <thead class="lead bg-info">
           <tr>
             <th class="col-xs-5">англ.</th>
@@ -22,14 +23,21 @@
               <td><strong>{{ eng }}</strong></td>
               <td><em>{{ rus }}</em></td>
               <td>
-                <button class="pull-right btn btn-link btn-xs" type="button"><!--
-                --><span class="glyphicon glyphicon-remove"></span><!--
+                <button class="pull-right btn btn-link btn-xs delete-button"
+                  type="button"><!--
+                  --><span class="glyphicon glyphicon-remove"></span><!--
                 --></button>
               </td>
             </tr>
           {% endfor %}
         </tbody>
       </table>
+      <form action="/dict/update/{{ textId }}" method="POST" name="dictUpdate">
+        <input type="hidden" name="dictUpdate[fields]" id="removeFields"
+          value="{{ {'text_id':textId}|json_encode() }}">
+        <button type="submit"
+          class="btn btn-success btn-lg btn-block">Сохранить</button>
+      </form>
     {% else %}
       <p class="bg-info message-not-found">
         Слов к тексту не найдено. Попробуйте обновить словарь.

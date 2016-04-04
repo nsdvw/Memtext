@@ -165,7 +165,7 @@ $app->get('/dict/{id}', function (Request $request, Response $response) {
     return $this->view->render(
         $response,
         'view_dict.twig',
-        ['dictionary' => $dictionary]
+        ['dictionary' => $dictionary, 'textId' => $textId]
     );
 });
 

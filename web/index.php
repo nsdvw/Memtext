@@ -176,6 +176,10 @@ $app->map(
                 $this->textMapper->save($text);
                 $words = $this->translatorService->createVocabulary($textForm->content);
                 $this->translatorService->saveToRedis($text->id, $words);
+                return $response->withStatus(302)->withHeader(
+                    'Location',
+                    "/text/view/{$text->id}"
+                );
             }
         }
         $response = $this->view->render(

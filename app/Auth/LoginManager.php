@@ -77,4 +77,12 @@ class LoginManager
         }
         return false;
     }
+
+    public function isOwner($textAuthorId)
+    {
+        if (intval($this->getUserId()) === intval($textAuthorId)) {
+            return true;
+        }
+        return false;
+    }
 }

@@ -34,9 +34,9 @@
       </table>
       <form action="/dict/update/{{ textId }}" method="POST" name="dictUpdate">
         <input type="hidden" name="dictUpdate[fields]" id="removeFields"
-          value="{{ {'text_id':textId}|json_encode() }}">
+          value="{{ {}|json_encode() }}">
         <button type="submit"
-          class="btn btn-success btn-lg btn-block">Сохранить</button>
+          class="btn btn-success btn-lg btn-block" id="saveButton">Сохранить</button>
       </form>
     {% else %}
       <p class="bg-info message-not-found">

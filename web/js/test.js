@@ -22,6 +22,7 @@ putToHtml(testWords);
 
 var confirm = $("#confirmButton");
 confirm.on("click", confirmHandler);
+userAnswer.on("keypress", pressingEnter);
 
 
 /* FUNCTIONS */
@@ -56,6 +57,12 @@ function confirmHandler() {
         answerContainer.show();
     }
     userAnswer.val('');
+}
+
+function pressingEnter(e) {
+    if (e.charCode == 13) {
+        confirmHandler();
+    }
 }
 
 function showResults() {

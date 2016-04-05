@@ -1,16 +1,18 @@
 {% extends 'main_layout.twig' %}
 
 {% block extra %}
-    <link rel="stylesheet" href="/css/view_text.css">
+  <link rel="stylesheet" href="/css/view_text.css">
 {% endblock extra %}
 
 {% block content %}
+  <div class="text-content">
     <section class="clearfix content">
-        <h1>{{ text.title }}</h1>
-        <article class="article">{{ text.content|raw }}</article>
-        <a href="/test/{{ text.id }}"
-           class="btn btn-success pull-right">Пройти тест</a>
-        <a href="/dict/{{ text.id }}"
-           class="btn btn-warning pull-left">Словарь</a>
+      <h1>{{ text.title }}</h1>
+      <article class="article">{{ text.content|raw }}</article>
+      <a href="/test/{{ text.id }}"
+         class="btn btn-success pull-right">Пройти тест</a>
+      <a href="/dict/{{ text.id }}"
+         class="btn btn-warning pull-left">Словарь</a>
     </section>
+  </div>
 {% endblock content %}

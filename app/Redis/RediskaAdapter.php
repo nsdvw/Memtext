@@ -32,6 +32,15 @@ class RediskaAdapter implements RedisAdapterInterface
         return $key->getFieldsAndValues();
     }
 
+    public function hdel($hashName, array $fields)
+    {
+        $key = new \Rediska_Key_Hash($hashName);
+        foreach ($fields as $field) {
+            $key->remove($field);
+        }
+        return true;
+    }
+
     public function getPrefix()
     {
         return $this->prefix;

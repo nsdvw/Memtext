@@ -1,0 +1,37 @@
+@media (min-width: 992px) {
+    .test-content {
+        width: 50%;
+    }
+}
+@media (min-width: 768px) and (max-width: 992px) {
+    .test-content {
+        width: 60%;
+    }
+}
+@media (max-width: 768px) {
+    .test-content {
+        width: 80%;
+    }
+}
+
+@media (max-width: 992px) {
+    #userAnswer {
+        margin-bottom: 20px;
+    }
+    .confirm-container {
+        width: 100%;
+    }
+}
+
+.test-content {
+    margin: 40px auto;
+}
+.test-progress {
+    width: 20%;
+}
+.answer-form {
+    margin-bottom: 20px;
+}
+.right-answer, .result {
+    display: none;
+}

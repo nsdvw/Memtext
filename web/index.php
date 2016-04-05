@@ -142,6 +142,19 @@ $app->get('/', function (Request $request, Response $response) {
     return $this->view->render($response, 'main_page.twig');
 })->add($container->get('csrf'));
 
+$app->get('/test/{id}', function (Request $request, Response $response) {
+    $textId = $request->getAttribute('id');
+    $text = $redis = $this->redisClient;
+    $key = $redis->getPrefix() . ":{$textId}";
+    $dictionary = $redis->hgetall($key);
+
+    return $this->view->render(
+        $response,
+        'test.twig',
+        ['dictionary' => $dictionary, 'textId' => $textId]
+    );
+});
+
 $app->get('/text/view/{id}', function (Request $request, Response $response) {
     $textId = $request->getAttribute('id');
     $text = $this->textMapper->findById($textId);

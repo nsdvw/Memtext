@@ -1,0 +1,38 @@
+{% extends 'main_layout.twig' %}
+
+{% block extra %}
+  <link rel="stylesheet" href="/css/test.css">
+  <script>var dict = JSON.parse('{{ dictionary|json_encode|raw }}');</script>
+{% endblock extra %}
+
+{% block content %}
+  <div class="test-content">
+    <div id="testForm">
+      <div class="progress">
+        <div class="test-progress progress-bar progress-bar-info" role="progressbar"
+             aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+          20%
+        </div>
+      </div>
+
+      <p class="alert alert-info lead"><strong id="question"></strong></p>
+
+      <div class="row answer-form">
+        <div class="col-xs-12 col-md-9">
+          <input type="text" id="userAnswer" class="form-control">
+        </div>
+        <div class="col-xs-3 clearfix confirm-container">
+          <button type="button" id="confirmButton"
+                  class="btn btn-success btn-block pull-right">ответить</button>
+        </div>
+      </div>
+
+      <p class="alert alert-danger lead right-answer"><em id="rightAnswer"></em></p>
+    </div>
+
+    <p id="result" class="alert alert-success result"></p>
+
+    <a href="/text/view/{{ textId }}">Назад к тексту</a>
+  </div>
+  <script defer src="/js/test.js"></script>
+{% endblock content %}

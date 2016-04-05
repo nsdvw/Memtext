@@ -5,9 +5,9 @@
 {% endblock extra %}
 
 {% block content %}
-    <section class="clearfix">
+    <section class="clearfix content">
         <h1>{{ text.title }}</h1>
-        <article class="content">{{ text.content }}</article>
+        <article class="article">{{ text.content|raw }}</article>
         <a href="/test/{{ text.id }}"
            class="btn btn-success pull-right">Пройти тест</a>
         <a href="/dict/{{ text.id }}"

@@ -2,15 +2,17 @@
 
 {% block extra %}
   <link rel="stylesheet" href="/css/new_text.css">
+  <script src="/ckeditor/ckeditor.js"></script>
 {% endblock extra %}
 
 {% block content %}
   <h1><small>Загрузить новый текст</small></h1>
+
   <form action="" method="POST" name="textForm">
     <input type="text" name="textForm[title]" placeholder="заголовок..."
            class="form-control text-upload-title">
     <textarea name="textForm[content]" class="form-control text-upload-input"
-              rows="10" placeholder="скопируйте сюда текст..."
+              rows="10" placeholder="скопируйте сюда текст..." id="ckeditor"
               maxlength="65000" value="{{ textForm.content }}"></textarea>
     <button type="submit"
             class="btn btn-danger text-upload-button">Загрузить</button>
@@ -21,4 +23,8 @@
       </div>
     {% endif %}
   </form>
+
+  <script>
+    CKEDITOR.replace('ckeditor', { language: 'ru' });
+  </script>
 {% endblock content %}

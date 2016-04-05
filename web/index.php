@@ -169,6 +169,23 @@ $app->get('/dict/{id}', function (Request $request, Response $response) {
     );
 });
 
+$app->post('/dict/update/{id}', function (Request $request, Response $response) {
+    $textId = $request->getAttribute('id');
+    $authorId = $this->textMapper->getAuthorId($textId);
+    if ($this->loginManager->isOwner($authorId)) {
+        $postData = $request->getParsedBody()['dictUpdate'];
+        $fields = json_decode($postData['fields']);
+        $redis = $this->redisClient;
+        $key = $redis->getPrefix() . ":{$textId}";
+        $redis->hdel($key, $fields);
+        return $response->withStatus(302)->withHeader(
+            'Location',
+            "/dict/{$textId}"
+        );
+    }
+    return $this->view->render($response, 'forbidden.twig');
+});
+
 $app->map(
     ['GET', 'POST'],
     '/text/new',

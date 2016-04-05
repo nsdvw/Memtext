@@ -24,21 +24,25 @@
               <td><strong>{{ eng }}</strong></td>
               <td><em>{{ rus }}</em></td>
               <td>
+                {% if loginManager.isLogged() %}
                 <button class="pull-right btn btn-link btn-xs delete-button"
                   type="button"><!--
                   --><span class="glyphicon glyphicon-remove"></span><!--
                 --></button>
+                {% endif %}
               </td>
             </tr>
           {% endfor %}
         </tbody>
       </table>
-      <form action="/dict/update/{{ textId }}" method="POST" name="dictUpdate">
-        <input type="hidden" name="dictUpdate[fields]" id="removeFields"
-          value="{{ {}|json_encode() }}">
-        <button type="submit"
-          class="btn btn-success btn-lg btn-block" id="saveButton">Сохранить</button>
-      </form>
+      {% if loginManager.isLogged() %}
+        <form action="/dict/update/{{ textId }}" method="POST" name="dictUpdate">
+          <input type="hidden" name="dictUpdate[fields]" id="removeFields"
+            value="{{ {}|json_encode() }}">
+          <button type="submit"
+            class="btn btn-success btn-lg btn-block" id="saveButton">Сохранить</button>
+        </form>
+      {% endif %}
     {% else %}
       <p class="alert alert-info message-not-found">
         Слов к тексту не найдено. Попробуйте обновить словарь.

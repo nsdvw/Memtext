@@ -1,0 +1,69 @@
+{% extends 'main_layout.twig' %}
+
+{% block extra %}
+  <link rel="stylesheet" href="/css/register_page.css">
+{% endblock extra %}
+
+{% block content %}
+<div class="register-page-content">
+
+  <form action="/register" method="POST" name="registerForm"
+        class="form-horizontal">
+
+    <div class="form-group">
+      <label for="login" class="col-xs-3 control-label">Логин: </label>
+      <div class="col-xs-9 col-md-6">
+        <input type="text" id="login" name="registerForm[login]"
+               value="{{ registerForm.login }}" class="form-control">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="email" class="col-xs-3 control-label">Эл.почта: </label>
+      <div class="col-xs-9 col-md-6">
+        <input type="email" id="email" name="registerForm[email]"
+               value="{{ registerForm.email }}" class="form-control">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password" class="col-xs-3 control-label">Пароль: </label>
+      <div class="col-xs-9 col-md-6">
+        <input type="password" id="password" name="registerForm[password]"
+               class="form-control">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="repeat" class="col-xs-3 control-label">Повторить пароль: </label>
+      <div class="col-xs-9 col-md-6">
+        <input type="password" id="repeat" name="registerForm[repeatPassword]"
+               class="form-control">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-xs-offset-3 col-xs-9 col-md-6">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="registerForm[remember]"
+                   {% if registerForm.remember %}checked{% endif %}> Запомнить меня
+          </label>
+          <button type="submit" class="btn btn-danger pull-right">Регистрация</button>
+        </div>
+      </div>
+    </div>
+
+    {% if registerForm.errorMessage %}
+      <div class="col-xs-offset-3 col-xs-9 col-md-6">
+        <div class="panel panel-danger login-error">
+          <div class="panel-heading">Ошибка:</div>
+          <div class="panel-body">{{ registerForm.errorMessage }}</div>
+        </div>
+      </div>
+    {% endif %}
+
+  </form>
+
+</div>
+{% endblock content %}

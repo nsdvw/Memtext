@@ -3,6 +3,7 @@ namespace Memtext\Auth;
 
 use \Memtext\Mapper\UserMapper;
 use \Memtext\Form\LoginForm;
+use \Memtext\Form\RegisterForm;
 use \Memtext\Model\User;
 
 class LoginManager
@@ -36,6 +37,19 @@ class LoginManager
         }
         $user = $this->mapper->findByEmail($form->email);
         return $form->validatePassword($user);
+    }
+
+    public function validateRegisterForm(RegisterForm $form)
+    {
+        if (!$form->validate()) {
+            return false;
+        }
+        $foundedUser = $this->mapper->findByEmail($form->email);
+        if (!$form->validateUniqueEmail($foundedUser)) {
+            return false;
+        }
+        $foundedUser = $this->mapper->findByLogin($form->login);
+        return $form->validateUniqueLogin($foundedUser);
     }
 
     public function login(User $user, $remember = true, $time = 604800)

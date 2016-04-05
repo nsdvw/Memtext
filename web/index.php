@@ -2,6 +2,7 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use \Memtext\Form\LoginForm;
+use \Memtext\Form\RegisterForm;
 use \Memtext\Form\TextForm;
 use \Memtext\Auth\LoginManager;
 use \Memtext\Mapper\UserMapper;
@@ -238,6 +239,27 @@ $app->map(
             ['loginForm' => $loginForm]
         );
         return $response;
+    }
+);
+
+$app->map(
+    ['GET', 'POST'],
+    '/register',
+    function (Request $request, Response $response) {
+        $form = new RegisterForm($request);
+        if ($request->isPost()) {
+            if ($this->loginManager->validateRegisterForm($form)) {
+                $user = $form->getUser();
+                $this->userMapper->register($user);
+                $this->loginManager->login($user, $form->remember);
+                return $response->withStatus(302)->withHeader('Location', '/');
+            }
+        }
+        return $this->view->render(
+            $response,
+            'register_page.twig',
+            ['registerForm' => $form]
+        );
     }
 );
 

@@ -30,6 +30,18 @@ class UserMapper extends AbstractMapper
         return $sth->fetch();
     }
 
+    public function findByLogin($login)
+    {
+        $sql = "SELECT id, login, email, salt, saltedHash
+                FROM user
+                WHERE login=:login";
+        $sth = $this->connection->prepare($sql);
+        $sth->bindValue(':login', $login, \PDO::PARAM_STR);
+        $sth->execute();
+        $sth->setFetchMode(\PDO::FETCH_CLASS, '\Memtext\Model\User');
+        return $sth->fetch();
+    }
+
     public function findById($id)
     {
         $sql = "SELECT id, login, email, salt, saltedHash

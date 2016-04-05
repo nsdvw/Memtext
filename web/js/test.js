@@ -1,7 +1,7 @@
 /* config */
 var WORD_COUNT = 10; // words per one test, const
-//var REPEATS = 2; // iteration level, const (how many times to repeat one word)
-var wrongAnswers = 0; // init global variable
+var rightAnswerCount = 0;
+var attempts = 0;
 
 var wordCount = WORD_COUNT;
 var allKeys = Object.keys(dict);
@@ -46,14 +46,15 @@ function putToHtml(testWords) {
 
 function confirmHandler() {
     answerContainer.hide();
+    attempts++;
     if (userAnswer.val() == rightAnswer.text()) {
+        rightAnswerCount++;
         if (testWords.length > 0) {
             putToHtml(testWords);
         } else {
             showResults();
         }
     } else {
-        wrongAnswers++;
         answerContainer.show();
     }
     userAnswer.val('');
@@ -67,8 +68,8 @@ function pressingEnter(e) {
 
 function showResults() {
     testForm.hide();
-    var text = "Результат: " + (wordCount - wrongAnswers)
-                + " правильных ответов из " + wordCount;
+    var text = "Результат: " + rightAnswerCount
+             + " правильных ответов из " + attempts + " попыток";
     resultContainer.text(text);
     resultContainer.show();
 }

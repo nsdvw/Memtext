@@ -25,6 +25,18 @@
   </form>
 
   <script>
-    CKEDITOR.replace('ckeditor', { language: 'ru' });
+    CKEDITOR.replace(
+      'ckeditor',
+      { 
+        language: 'ru',
+        toolbar :
+        [
+          { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','-','Undo','Redo' ] },
+          { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','-','RemoveFormat' ] },
+          { name: 'styles', items : [ 'Styles','Format','Font','FontSize' ] },
+          { name: 'document', items : [ 'Source','-','Save','NewPage','DocProps','Preview','Print','-','Templates' ] }
+        ]
+      }
+    );
   </script>
 {% endblock content %}

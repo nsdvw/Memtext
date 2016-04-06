@@ -19,23 +19,7 @@ use \Memtext\Model\Text;
 session_start();
 
 require '../vendor/autoload.php';
-
-$settings['displayErrorDetails'] = true;
-$settings['db']['dbname'] = 'memtext';
-$settings['db']['user'] = 'root';
-$settings['db']['pass'] = '';
-$settings['db']['host'] = 'localhost';
-$settings['pager']['perPage'] = 20;
-$settings['pager']['maxLinksCount'] = 6;
-$settings['purifier']['AutoFormat.AutoParagraph'] = true;
-$settings['purifier']['AutoFormat.RemoveEmpty'] = true;
-$settings['purifier']['HTML.Doctype'] = 'HTML 4.01 Transitional';
-$settings['purifier']['HTML.AllowedElements'] =
-    array('p','h1','h2','h3','h4','h5','h6','br','em','b','i','strong');
-
-$settings['yandex']['key'] = 'trnsl.1.1.20160330T163001Z.d161a299772702fe.' .
-                        '0d436c4c1cfc1713dea2aeb9d9e3f2bebae02844';
-$settings['yandex']['api'] = 'https://translate.yandex.net/api/v1.5/tr.json/translate';
+require '../app/settings.php';
 
 $app = new \Slim\App(['settings' => $settings]);
 

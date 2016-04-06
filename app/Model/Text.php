@@ -5,8 +5,28 @@ class Text extends AbstractModel
 {
     private $id;
     private $content;
+    private $dictionary;
     private $title;
     private $user_id;
+
+    public function ignore(array $words)
+    {
+        $dictionary = $this->dictionary;
+        if ($dictionary === null) {
+            return;
+        }
+        foreach ($words as $word) {
+            foreach ($dictionary as &$row) {
+                if ($row['eng'] !== $word) {
+                    continue;
+                }
+                $row['ignore'] = true;
+                break;
+            }
+        }
+        unset($row);
+        $this->dictionary = $dictionary;
+    }
 
     public function getId()
     {
@@ -16,6 +36,11 @@ class Text extends AbstractModel
     public function getContent()
     {
         return $this->content;
+    }
+
+    public function getDictionary()
+    {
+        return $this->dictionary;
     }
 
     public function getTitle()
@@ -36,6 +61,11 @@ class Text extends AbstractModel
     public function setContent($content)
     {
         $this->content = $content;
+    }
+
+    public function setDictionary($dictionary)
+    {
+        $this->dictionary = $dictionary;
     }
 
     public function setTitle($title)

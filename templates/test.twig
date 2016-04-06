@@ -2,7 +2,7 @@
 
 {% block extra %}
   <link rel="stylesheet" href="/css/test.css">
-  <script>var dict = JSON.parse('{{ dictionary|json_encode|raw }}');</script>
+  <script>var dict = JSON.parse('{{ text.dictionary|json_encode|raw }}');</script>
 {% endblock extra %}
 
 {% block content %}
@@ -32,7 +32,7 @@
 
     <p id="result" class="alert alert-success result"></p>
 
-    <a href="/text/view/{{ textId }}">Назад к тексту</a>
+    <a href="/text/view/{{ text.id }}">Назад к тексту</a>
   </div>
   <script defer src="/js/test.js"></script>
 {% endblock content %}

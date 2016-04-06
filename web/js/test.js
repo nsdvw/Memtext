@@ -3,6 +3,8 @@ var WORD_COUNT = 10; // words per one test, const
 var rightAnswerCount = 0;
 var attempts = 0;
 
+dict = ignoreFilter(dict);
+
 var wordCount = WORD_COUNT;
 var allKeys = Object.keys(dict);
 if (allKeys.length < WORD_COUNT) {
@@ -26,7 +28,6 @@ confirm.on("click", confirmHandler);
 userAnswer.on("keypress", pressingEnter);
 
 
-/* FUNCTIONS */
 function getTestWords() {
     var testWords = [];
     var startKey = getRandomInt(0, allKeys.length - wordCount + 1);
@@ -83,6 +84,18 @@ function displayProgress() {
     progressBar.width(progress + "%");
 }
 
+function ignoreFilter(dictionary) {
+    var result = {};
+    for (var i=0; i < dictionary.length; i++) {
+        if (dictionary[i].ignore == true) {
+            continue;
+        }
+        result[dictionary[i].eng] = dictionary[i].rus;
+    }
+    return result;
+}
+
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
+

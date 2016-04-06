@@ -13,7 +13,6 @@ use \Memtext\Handler\NotFoundHandler;
 use \Memtext\Helper\Pager;
 use \Memtext\Helper\TextParser;
 use \Memtext\Helper\YandexTranslator;
-use \Memtext\Redis\RediskaAdapter;
 use \Memtext\Model\Text;
 
 session_start();
@@ -78,14 +77,8 @@ $container['translatorService'] = function ($c) {
         $c['textMapper'],
         $c['wordMapper'],
         $c['textParser'],
-        $c['yandexTranslator'],
-        $c['redisClient']
+        $c['yandexTranslator']
     );
-};
-
-$container['redisClient'] = function ($c) {
-    $rediska = new \Rediska();
-    return new RediskaAdapter($rediska);
 };
 
 $container['view'] = function ($c) {
@@ -143,15 +136,8 @@ $app->get('/', function (Request $request, Response $response) {
 
 $app->get('/test/{id}', function (Request $request, Response $response) {
     $textId = $request->getAttribute('id');
-    $text = $redis = $this->redisClient;
-    $key = $redis->getPrefix() . ":{$textId}";
-    $dictionary = $redis->hgetall($key);
-
-    return $this->view->render(
-        $response,
-        'test.twig',
-        ['dictionary' => $dictionary, 'textId' => $textId]
-    );
+    $text = $this->textMapper->findById($textId);
+    return $this->view->render($response, 'test.twig', ['text' => $text]);
 });
 
 $app->get('/text/view/{id}', function (Request $request, Response $response) {
@@ -172,14 +158,8 @@ $app->post('/text/delete/{id}', function (Request $request, Response $response) 
 
 $app->get('/dict/{id}', function (Request $request, Response $response) {
     $textId = $request->getAttribute('id');
-    $redis = $this->redisClient;
-    $key = $redis->getPrefix() . ":{$textId}";
-    $dictionary = $redis->hgetall($key);
-    return $this->view->render(
-        $response,
-        'view_dict.twig',
-        ['dictionary' => $dictionary, 'textId' => $textId]
-    );
+    $text = $this->textMapper->findById($textId);
+    return $this->view->render($response, 'view_dict.twig', ['text' => $text]);
 });
 
 $app->post('/dict/update/{id}', function (Request $request, Response $response) {
@@ -187,10 +167,10 @@ $app->post('/dict/update/{id}', function (Request $request, Response $response) 
     $authorId = $this->textMapper->getAuthorId($textId);
     if ($this->loginManager->isOwner($authorId)) {
         $postData = $request->getParsedBody()['dictUpdate'];
-        $fields = json_decode($postData['fields']);
-        $redis = $this->redisClient;
-        $key = $redis->getPrefix() . ":{$textId}";
-        $redis->hdel($key, $fields);
+        $words = json_decode($postData['fields']);
+        $text = $this->textMapper->findById($textId);
+        $text->ignore($words);
+        $this->textMapper->update($text);
         return $response->withStatus(302)->withHeader(
             'Location',
             "/dict/{$textId}"
@@ -213,9 +193,9 @@ $app->map(
                 $text->content = $textForm->content;
                 $text->title = $textForm->title;
                 $text->user_id = $this->loginManager->getUserId();
+                $text->dictionary = 
+                    $this->translatorService->createVocabulary($textForm->content);
                 $this->textMapper->save($text);
-                $words = $this->translatorService->createVocabulary($textForm->content);
-                $this->translatorService->saveToRedis($text->id, $words);
                 return $response->withStatus(302)->withHeader(
                     'Location',
                     "/text/view/{$text->id}"

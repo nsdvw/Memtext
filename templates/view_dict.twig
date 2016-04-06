@@ -7,36 +7,38 @@
 
 {% block content %}
   <div class="dictionary-content row">
-    <a href="/text/view/{{ textId }}">Назад к тексту</a>
+    <a href="/text/view/{{ text.id }}">Назад к тексту</a>
     <h1>Словарь</h1>
-    {% if dictionary is not empty %}
+    {% if text.dictionary is not empty %}
       <table class="table dictionary-table">
         <thead class="lead bg-info">
           <tr>
-            <th class="col-xs-5">англ.</th>
-            <th class="col-xs-6">рус.</th>
-            <th class="col-xs-1"></th>
+            <th class="col-xs-5">английский</th>
+            <th class="col-xs-6">русский</th>
+            <th class="col-xs-1">игнорировать</th>
           </tr>
         </thead>
         <tbody>
-          {% for eng, rus in dictionary %}
-            <tr>
-              <td><strong>{{ eng }}</strong></td>
-              <td><em>{{ rus }}</em></td>
-              <td>
-                {% if loginManager.isLogged() %}
-                <button class="pull-right btn btn-link btn-xs delete-button"
-                  type="button"><!--
-                  --><span class="glyphicon glyphicon-remove"></span><!--
-                --></button>
-                {% endif %}
-              </td>
-            </tr>
+          {% for row in text.dictionary %}
+            {% if row.ignore == false %}
+              <tr>
+                <td><strong>{{ row.eng }}</strong></td>
+                <td><em>{{ row.rus }}</em></td>
+                <td>
+                  {% if loginManager.isLogged() %}
+                  <button class="pull-right btn btn-link btn-xs delete-button"
+                    type="button"><!--
+                    --><span class="glyphicon glyphicon-remove"></span><!--
+                  --></button>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endif %}
           {% endfor %}
         </tbody>
       </table>
       {% if loginManager.isLogged() %}
-        <form action="/dict/update/{{ textId }}" method="POST" name="dictUpdate">
+        <form action="/dict/update/{{ text.id }}" method="POST" name="dictUpdate">
           <input type="hidden" name="dictUpdate[fields]" id="removeFields"
             value="{{ {}|json_encode() }}">
           <button type="submit"

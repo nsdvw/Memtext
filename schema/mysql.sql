@@ -12,6 +12,7 @@ CREATE TABLE `text`
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `title` VARCHAR(255) NOT NULL,
     `content` TEXT NOT NULL,
+    `dictionary` TEXT NOT NULL COMMENT 'dictionary serialized in json',
     `user_id` INT UNSIGNED NOT NULL,
     FOREIGN KEY (`user_id`) REFERENCES `user`(`id`)
         ON UPDATE CASCADE ON DELETE CASCADE

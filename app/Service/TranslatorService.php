@@ -5,27 +5,24 @@ use \Memtext\Mapper\TextMapper;
 use \Memtext\Mapper\WordMapper;
 use \Memtext\Helper\TextParser;
 use \Memtext\Helper\TranslatorInterface as Translator;
-use \Memtext\Redis\RedisAdapterInterface as Redis;
 
 class TranslatorService
 {
     private $textMapper;
     private $textParser;
-    private $redisClient;
     private $wordMapper;
+    private $translator;
 
     public function __construct(
         TextMapper $textMapper,
         WordMapper $wordMapper,
         TextParser $textParser,
-        Translator $translator,
-        Redis $client
+        Translator $translator
     ) {
         $this->textMapper = $textMapper;
         $this->textParser = $textParser;
         $this->wordMapper = $wordMapper;
         $this->translator = $translator;
-        $this->client = $client;
     }
 
     public function createVocabulary($text)
@@ -37,19 +34,22 @@ class TranslatorService
         $newWords = array_combine($missingTranslations, $newTranslations);
         $this->wordMapper->save($newWords);
 
-        return array_merge($savedTranslations, $newWords);
-    }
-
-    public function saveToRedis($textId, array $words)
-    {
-        $client = $this->client;
-        $key = $client->getPrefix() . ":{$textId}";
-        $client->hmset($key, $words);
+        $words = array_merge($savedTranslations, $newWords);
+        return $this->changeArrayFormat($words);
     }
 
     private function getMissing($words, $savedTranslations)
     {
         $missing = array_diff_key(array_flip($words), $savedTranslations);
         return array_keys($missing);
+    }
+
+    private function changeArrayFormat($words)
+    {
+        $result = [];
+        foreach ($words as $eng => $rus) {
+            $result[] = ['eng' => $eng, 'rus' => $rus, 'ignore' => false];
+        }
+        return $result;
     }
 }

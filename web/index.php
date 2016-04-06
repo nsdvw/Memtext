@@ -27,6 +27,12 @@ $settings['db']['pass'] = '';
 $settings['db']['host'] = 'localhost';
 $settings['pager']['perPage'] = 20;
 $settings['pager']['maxLinksCount'] = 6;
+$settings['purifier']['AutoFormat.AutoParagraph'] = true;
+$settings['purifier']['AutoFormat.RemoveEmpty'] = true;
+$settings['purifier']['HTML.Doctype'] = 'HTML 4.01 Transitional';
+$settings['purifier']['HTML.AllowedElements'] =
+    array('p','h1','h2','h3','h4','h5','h6','br','em','b','i','strong');
+
 $settings['yandex']['key'] = 'trnsl.1.1.20160330T163001Z.d161a299772702fe.' .
                         '0d436c4c1cfc1713dea2aeb9d9e3f2bebae02844';
 $settings['yandex']['api'] = 'https://translate.yandex.net/api/v1.5/tr.json/translate';
@@ -65,6 +71,15 @@ $container['wordMapper'] = function ($c) {
 
 $container['loginManager'] = function ($c) {
     return new LoginManager($c['userMapper']);
+};
+
+$container['purifier'] = function ($c) {
+    $config = \HTMLPurifier_Config::createDefault();
+    $settings = $c['settings']['purifier'];
+    foreach ($settings as $key => $value) {
+        $config->set($key, $value);
+    }
+    return new \HTMLPurifier($settings);
 };
 
 $container['textParser'] = new TextParser;
@@ -207,7 +222,7 @@ $app->map(
         if (!$this->loginManager->isLogged()) {
             return $response->withStatus(302)->withHeader('Location', '/login');
         }
-        $textForm = new TextForm($request);
+        $textForm = new TextForm($request, $this->purifier);
         if ($request->isPost()) {
             if ($textForm->validate()) {
                 $text = new Text;

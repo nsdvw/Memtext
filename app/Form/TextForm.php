@@ -8,11 +8,11 @@ class TextForm extends AbstractForm
     public $content;
     public $title;
 
-    public function __construct(Request $request)
+    public function __construct(Request $request, \HTMLPurifier $purifier)
     {
         $textFormData = $request->getParsedBody()['textForm'];
         $this->content = isset($textFormData['content'])
-                         ? $textFormData['content'] : null;
+                         ? $purifier->purify($textFormData['content']) : null;
         $this->title = isset($textFormData['title'])
                          ? $textFormData['title'] : null;
     }

@@ -17,6 +17,7 @@ var userAnswer = $("#userAnswer");
 var answerContainer = $(".right-answer");
 var testForm = $("#testForm");
 var resultContainer = $("#result");
+var progressBar = $("#progressBar");
 
 putToHtml(testWords);
 
@@ -49,6 +50,7 @@ function confirmHandler() {
     attempts++;
     if (userAnswer.val() == rightAnswer.text()) {
         rightAnswerCount++;
+        displayProgress();
         if (testWords.length > 0) {
             putToHtml(testWords);
         } else {
@@ -72,6 +74,13 @@ function showResults() {
              + " правильных ответов из " + attempts + " попыток";
     resultContainer.text(text);
     resultContainer.show();
+}
+
+function displayProgress() {
+    var progress = Math.floor(100 * rightAnswerCount / wordCount);
+    progressBar.text(progress + "%");
+    progressBar.attr("aria-valuenow", progress);
+    progressBar.width(progress + "%");
 }
 
 function getRandomInt(min, max) {

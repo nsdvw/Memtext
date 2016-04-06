@@ -12,7 +12,7 @@ How to use
 will be a comfortable volume to work with. Maximum length is limited by 64kb.
 1. Format the text in wysiwig, if you want. Tags listed in 'purifier' config section
 are acceptable. By default: p, headers, em and strong elements allowed.
-1. After submitting, you may watch the vocabulary attached to the text and delete
+1. After submitting, you may watch the vocabulary attached to the text and ignore
 garbage like short words, or words you already know. And finally you can examine
 your language skills by repeating the words in test form.
 
@@ -20,7 +20,6 @@ System requirements
 -------------------
 1. Php ^5.4
 1. Mysql ^5.5
-1. Redis >=2.8
 1. Webserver apache/nginx with mod_rewrite tool
 
 How to install

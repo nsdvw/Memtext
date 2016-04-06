@@ -19,7 +19,7 @@ class LoginManager
     public function getLoggedUser()
     {
         $id = isset($_COOKIE['id']) ? intval($_COOKIE['id']) : null;
-        $hash = isset($_COOKIE['hash']) ? intval($_COOKIE['hash']) : null;
+        $hash = isset($_COOKIE['hash']) ? $_COOKIE['hash'] : null;
         if (!$id or !$hash) {
             return null;
         }

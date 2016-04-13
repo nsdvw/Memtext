@@ -9,7 +9,9 @@
         "slim/csrf": "^0.6.0",
         "geometria-lab/rediska": "^0.5.10",
         "ckeditor/ckeditor": "^4.5",
-        "ezyang/htmlpurifier": "^4.7"
+        "ezyang/htmlpurifier": "^4.7",
+        "doctrine/orm": "^2.5",
+        "symfony/yaml": "^3.0"
     },
     "scripts": {
         "post-install-cmd": "bash scripts/post-update-cmd.sh",

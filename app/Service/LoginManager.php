@@ -1,5 +1,5 @@
 <?php
-namespace Memtext\Auth;
+namespace Memtext\Service;
 
 use Doctrine\ORM\EntityRepository;
 use Memtext\Form\LoginForm;

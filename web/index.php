@@ -11,15 +11,10 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Memtext\Form\LoginForm;
 use Memtext\Form\RegisterForm;
 use Memtext\Form\TextForm;
-use Memtext\Auth\LoginManager;
-use Memtext\Mapper\UserMapper;
-use Memtext\Mapper\TextMapper;
-use Memtext\Mapper\WordMapper;
-use Memtext\Service\TranslatorService;
+use Memtext\Service\LoginManager;
 use Memtext\Handler\NotFoundHandler;
 use Memtext\Helper\Pager;
 use Memtext\Helper\TextParser;
-use Memtext\Helper\YandexTranslator;
 use Memtext\Model\Text;
 use Slim\App;
 

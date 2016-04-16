@@ -1,0 +1,13 @@
+Memtext\Model\FullDict:
+  type: entity
+  table: fulldict
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    keyword:
+      type: string
+    definition:
+      type: text

@@ -1,0 +1,22 @@
+Memtext\Model\Text:
+  type: entity
+  table: text
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    content:
+      type: string
+    title:
+      type: string
+  manyToOne:
+    author:
+      targetEntity: User
+      inversedBy: texts
+  manyToMany:
+    fulldicts:
+      targetEntity: FullDict
+    shortdicts:
+      targetEntity: ShortDict

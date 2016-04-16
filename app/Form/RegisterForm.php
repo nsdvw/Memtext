@@ -1,9 +1,9 @@
 <?php
 namespace Memtext\Form;
 
-use \Psr\Http\Message\ServerRequestInterface as Request;
-use \Memtext\Model\User;
-use \Memtext\Helper\HashGenerator;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Memtext\Model\User;
+use Memtext\Helper\HashGenerator;
 
 class RegisterForm extends AbstractForm
 {
@@ -68,10 +68,12 @@ class RegisterForm extends AbstractForm
     private function createUser()
     {
         $user = new User;
-        $user->login = $this->login;
-        $user->email = $this->email;
-        $user->salt = HashGenerator::generateSalt();
-        $user->saltedHash = HashGenerator::generateHash($user->salt, $this->password);
+        $user->setLogin($this->login);
+        $user->setEmail($this->email);
+        $user->setSalt(HashGenerator::generateSalt());
+        $user->setSaltedHash(
+            HashGenerator::generateHash($user->salt, $this->password)
+        );
         $this->user = $user;
     }
 

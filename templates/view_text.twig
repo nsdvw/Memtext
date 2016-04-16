@@ -7,12 +7,18 @@
 {% block content %}
   <div class="text-content">
     <section class="clearfix content">
-      <h1>{{ text.title }}</h1>
-      <article class="article">{{ text.content|raw }}</article>
-      <a href="/test/{{ text.id }}"
+      <h1>{{ text.getTitle() }}</h1>
+      <article class="article">{{ text.getContent()|raw }}</article>
+      <a href="/test/{{ text.getId() }}"
          class="btn btn-success pull-right">Пройти тест</a>
-      <a href="/dict/{{ text.id }}"
-         class="btn btn-warning pull-left">Словарь</a>
     </section>
+    {% for dict in text.getFulldicts() %}
+      <section class="dictionary">
+        <h2 class="text-primary">{{ dict.getKeyword() }}</h2>
+        <article>
+          <table>{{ dict.getDefinition()|raw }}</table>
+        </article>
+      </section>
+    {% endfor %}
   </div>
 {% endblock content %}

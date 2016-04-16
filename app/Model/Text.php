@@ -1,80 +1,145 @@
 <?php
 namespace Memtext\Model;
 
-class Text extends AbstractModel
+use Doctrine\Common\Collections\ArrayCollection;
+
+class Text
 {
+    /**
+     * @var int
+     */
     private $id;
+    /**
+     * @var string
+     */
     private $content;
-    private $dictionary;
+    /**
+     * @var string
+     */
     private $title;
-    private $user_id;
+    /**
+     * @var User
+     */
+    private $author;
 
-    public function ignore(array $words)
-    {
-        $dictionary = $this->dictionary;
-        if ($dictionary === null) {
-            return;
-        }
-        foreach ($words as $word) {
-            foreach ($dictionary as &$row) {
-                if ($row['eng'] !== $word) {
-                    continue;
-                }
-                $row['ignore'] = true;
-                break;
-            }
-        }
-        unset($row);
-        $this->dictionary = $dictionary;
-    }
+    /**
+     * @var ArrayCollection
+     */
+    private $shortdicts;
+    /**
+     * @var ArrayCollection
+     */
+    private $fulldicts;
 
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    public function __construct()
+    {
+        $this->shortdicts = new ArrayCollection();
+        $this->fulldicts = new ArrayCollection();
+    }
+
+    /**
+     * @return string
+     */
     public function getContent()
     {
         return $this->content;
     }
 
-    public function getDictionary()
-    {
-        return $this->dictionary;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    public function getUser_id()
-    {
-        return $this->user_id;
-    }
-
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
+    /**
+     * @param string $content
+     */
     public function setContent($content)
     {
         $this->content = $content;
     }
 
-    public function setDictionary($dictionary)
+    /**
+     * @return string
+     */
+    public function getTitle()
     {
-        $this->dictionary = $dictionary;
+        return $this->title;
     }
 
+    /**
+     * @param string $title
+     */
     public function setTitle($title)
     {
         $this->title = $title;
     }
 
-    public function setUser_id($user_id)
+    /**
+     * @return User
+     */
+    public function getAuthor()
     {
-        $this->user_id = $user_id;
+        return $this->author;
+    }
+
+    /**
+     * @param User $author
+     */
+    public function setAuthor(User $author)
+    {
+        $author->attachText($this);
+        $this->author = $author;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getShortdicts()
+    {
+        return $this->shortdicts;
+    }
+
+    /**
+     * @return array
+     */
+    public function getShortdictsArray()
+    {
+        $entities = $this->shortdicts->toArray();
+        $words = [];
+        foreach ($entities as $entity) {
+            $words[$entity->getKeyword()] = $entity->getDefinition();
+        }
+        return $words;
+    }
+
+    /**
+     * @param array $words
+     */
+    public function setShortdicts(array $words)
+    {
+        foreach ($words as $word) {
+            $this->shortdicts[] = $word;
+        }
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getFulldicts()
+    {
+        return $this->fulldicts;
+    }
+
+    /**
+     * @param array $words
+     */
+    public function setFulldicts(array $words)
+    {
+        foreach ($words as $word) {
+            $this->fulldicts[] = $word;
+        }
     }
 }

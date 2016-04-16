@@ -18,3 +18,7 @@
 .content {
     padding-bottom: 40px;
 }
+/* special tag for keyword */
+.dictionary k {
+    font-weight: bold;
+}

@@ -1,18 +1,18 @@
 <?php
 namespace Memtext\Auth;
 
-use \Memtext\Mapper\UserMapper;
-use \Memtext\Form\LoginForm;
-use \Memtext\Form\RegisterForm;
-use \Memtext\Model\User;
+use Doctrine\ORM\EntityRepository;
+use Memtext\Form\LoginForm;
+use Memtext\Form\RegisterForm;
+use Memtext\Model\User;
 
 class LoginManager
 {
-    private $mapper;
+    private $repo;
     private $loggedUser;
 
-    public function __construct(UserMapper $mapper) {
-        $this->mapper = $mapper;
+    public function __construct(EntityRepository $repo) {
+        $this->repo = $repo;
         $this->loggedUser = $this->getLoggedUser();
     }
 
@@ -23,8 +23,8 @@ class LoginManager
         if (!$id or !$hash) {
             return null;
         }
-        $user = $this->mapper->findById($id);
-        if ($user->saltedHash != $hash) {
+        $user = $this->repo->find($id);
+        if ($user->getSaltedHash() != $hash) {
             return null;
         }
         return $user;
@@ -35,7 +35,7 @@ class LoginManager
         if (!$form->validate()) {
             return false;
         }
-        $user = $this->mapper->findByEmail($form->email);
+        $user = $this->repo->findOneBy( ['email'=>$form->email] );
         return $form->validatePassword($user);
     }
 
@@ -44,11 +44,11 @@ class LoginManager
         if (!$form->validate()) {
             return false;
         }
-        $foundedUser = $this->mapper->findByEmail($form->email);
+        $foundedUser = $this->repo->findOneBy( ['email'=>$form->email] );
         if (!$form->validateUniqueEmail($foundedUser)) {
             return false;
         }
-        $foundedUser = $this->mapper->findByLogin($form->login);
+        $foundedUser = $this->repo->findOneBy( ['login'=>$form->login] );
         return $form->validateUniqueLogin($foundedUser);
     }
 
@@ -56,8 +56,8 @@ class LoginManager
     {
         $expires = $remember ? time() + $time : 0;
         $path = '/';
-        setcookie('id', $user->id, $expires, $path);
-        setcookie('hash', $user->saltedHash, $expires, $path);
+        setcookie('id', $user->getId(), $expires, $path);
+        setcookie('hash', $user->getSaltedHash(), $expires, $path);
         $this->loggedUser = $user;
     }
 
@@ -71,7 +71,7 @@ class LoginManager
     public function getUserID()
     {
         if ($this->isLogged()) {
-            return $this->loggedUser->id;
+            return $this->loggedUser->getId();
         }
         return null;
     }
@@ -79,7 +79,7 @@ class LoginManager
     public function getUserLogin()
     {
         if ($this->isLogged()) {
-            return $this->loggedUser->login;
+            return $this->loggedUser->getLogin();
         }
         return null;
     }

@@ -7,6 +7,14 @@ $settings['db'] = [
     'user' => 'root',
     'pass' => '',
     'host' => 'localhost',
+    'driver' => 'pdo_mysql',
+];
+
+$settings['sphinx'] = [
+    'host' => '127.0.0.1',
+    'port' => 9306,
+    'short_index' => 'ix_short',
+    'full_index' => 'ix_full',
 ];
 
 $settings['pager'] = [

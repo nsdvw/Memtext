@@ -3,7 +3,7 @@ namespace Memtext\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-class User extends AbstractModel
+class User
 {
     /**
      * @var int

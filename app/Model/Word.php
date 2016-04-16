@@ -1,7 +1,7 @@
 <?php
 namespace Memtext\Model;
 
-class Word extends AbstractModel
+class Word
 {
     private $id;
     private $eng;

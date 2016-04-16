@@ -11,16 +11,16 @@ How to use
 1. Copy and paste a fragment of the text you want to translate. One or two pages
 will be a comfortable volume to work with. Maximum length is limited by 64kb.
 1. Format the text in wysiwig, if you want. Tags listed in 'purifier' config section
-are acceptable. By default: p, headers, em and strong elements allowed.
-1. After submitting, you may watch the vocabulary attached to the text and ignore
-garbage like short words, or words you already know. And finally you can examine
-your language skills by repeating the words in test form.
+are acceptable. By default: `p`, `headers`, `em` and `strong` elements allowed.
+1. And finally you can examine your language skills by repeating the words
+in test form.
 
 System requirements
 -------------------
 1. Php ^5.4
 1. Mysql ^5.5
 1. Webserver apache/nginx with mod_rewrite tool
+1. sphinxsearch ^2.0
 
 How to install
 --------------
@@ -38,3 +38,8 @@ $ mysql -uusername -ppassword memtext < schema/mysql.sql
 
 If you are a windows user, you need to manually copy some files listed in
 scripts/post-update-cmd.sh from vendor dir to their destination in public dir.
+
+Where to get dictionaries?
+From xdxf repositories http://dicto.org.ru/xdxf.html, or StarDict, GoldenDict etc.
+http://getfr.no-ip.org/pub/dc/software/stardict-ru/
+https://sites.google.com/site/gtonguedict/home/stardict-dictionaries

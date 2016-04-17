@@ -72,7 +72,7 @@ class RegisterForm extends AbstractForm
         $user->setEmail($this->email);
         $user->setSalt(HashGenerator::generateSalt());
         $user->setSaltedHash(
-            HashGenerator::generateHash($user->salt, $this->password)
+            HashGenerator::generateHash($user->getSalt(), $this->password)
         );
         $this->user = $user;
     }

@@ -4,6 +4,8 @@ use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
+use Memtext\Form\LogoutForm;
+use Memtext\Helper\Csrf;
 use Memtext\Mapper\SphinxMapper;
 use Memtext\Service\TextService;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -18,18 +20,16 @@ use Memtext\Helper\TextParser;
 use Memtext\Model\Text;
 use Slim\App;
 
-session_start();
-
 require '../vendor/autoload.php';
 require '../config/settings.php';
+
+$token = Csrf::init();
 
 $app = new App(['settings' => $settings]);
 
 $container = $app->getContainer();
 
-$container['csrf'] = function ($c) {
-    return new \Slim\Csrf\Guard;
-};
+$container['csrf_token'] = $token;
 
 $container['entityManager'] = function ($c) {
     $devMode = true;
@@ -68,9 +68,10 @@ $container['sphinxMapper'] = function ($c) {
 };
 
 $container['loginManager'] = function ($c) {
-    return new LoginManager($c['entityManager']->getRepository(
-        '\Memtext\Model\User'
-    ));
+    return new LoginManager(
+        $c['entityManager']->getRepository('\Memtext\Model\User'),
+        $c['csrf_token']
+    );
 };
 
 $container['purifier'] = function ($c) {
@@ -83,15 +84,6 @@ $container['purifier'] = function ($c) {
 };
 
 $container['textParser'] = new TextParser;
-
-$container['translatorService'] = function ($c) {
-    return new TranslatorService(
-        $c['textMapper'],
-        $c['wordMapper'],
-        $c['textParser'],
-        $c['yandexTranslator']
-    );
-};
 
 $container['textService'] = function ($c) {
     return new TextService(
@@ -114,6 +106,7 @@ $container['view'] = function ($c) {
     $view = new \Slim\Views\Twig('../templates');
     $view->addExtension(new \Twig_Extensions_Extension_Text());
     $view['loginManager'] = $c['loginManager'];
+    $view['csrf_token'] = $c['csrf_token'];
     return $view;
 };
 
@@ -126,16 +119,6 @@ $container['notFoundHandler'] = function ($c) {
 };
 
 $app->get('/', function (Request $request, Response $response) {
-
-    $nameKey = $this->csrf->getTokenNameKey();
-    $valueKey = $this->csrf->getTokenValueKey();
-
-    $this->view['csrf'] = [
-        'nameKey' => $nameKey,
-        'valueKey' => $valueKey,
-        'name' => $request->getAttribute($nameKey),
-        'value' => $request->getAttribute($valueKey),
-    ];
 
     if ($this->loginManager->isLogged()) {
         $userId = $this->loginManager->getUserId();
@@ -171,7 +154,7 @@ $app->get('/', function (Request $request, Response $response) {
     }
 
     return $this->view->render($response, 'main_page.twig');
-})->add($container->get('csrf'));
+});
 
 $app->get('/test/{id}', function (Request $request, Response $response) {
     $textId = $request->getAttribute('id');
@@ -284,7 +267,10 @@ $app->map(
 );
 
 $app->post('/logout', function (Request $request, Response $response) {
-    $this->loginManager->logout();
+    $form = new LogoutForm($request);
+    if ($this->loginManager->checkToken($form->csrf_token)) {
+        $this->loginManager->logout();
+    }
     return $response->withStatus(302)->withHeader('Location', '/');
 });
 

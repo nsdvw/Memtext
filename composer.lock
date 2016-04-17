@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c2758def4cc7f76d46ef0c2e62ba1d0e",
-    "content-hash": "08f51a534564e4da7fc0b51aa471920e",
+    "hash": "b9362bd6e7a6c329292bb3824cc6f745",
+    "content-hash": "bee4299e06b2ac747e9e3f068a74ea64",
     "packages": [
         {
             "name": "ckeditor/ckeditor",
@@ -804,54 +804,6 @@
             "time": "2015-06-18 19:15:47"
         },
         {
-            "name": "paragonie/random_compat",
-            "version": "v1.4.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "c7e26a21ba357863de030f0b9e701c7d04593774"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/c7e26a21ba357863de030f0b9e701c7d04593774",
-                "reference": "c7e26a21ba357863de030f0b9e701c7d04593774",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.*|5.*"
-            },
-            "suggest": {
-                "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "lib/random.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Paragon Initiative Enterprises",
-                    "email": "security@paragonie.com",
-                    "homepage": "https://paragonie.com"
-                }
-            ],
-            "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
-            "keywords": [
-                "csprng",
-                "pseudorandom",
-                "random"
-            ],
-            "time": "2016-03-18 20:34:03"
-        },
-        {
             "name": "pimple/pimple",
             "version": "v3.0.2",
             "source": {
@@ -945,56 +897,6 @@
                 "response"
             ],
             "time": "2015-05-04 20:22:00"
-        },
-        {
-            "name": "slim/csrf",
-            "version": "0.6.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/slimphp/Slim-Csrf.git",
-                "reference": "f56bccc1c3a9c76e5fcf7c6d56698a32f9e7e9d8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/slimphp/Slim-Csrf/zipball/f56bccc1c3a9c76e5fcf7c6d56698a32f9e7e9d8",
-                "reference": "f56bccc1c3a9c76e5fcf7c6d56698a32f9e7e9d8",
-                "shasum": ""
-            },
-            "require": {
-                "paragonie/random_compat": "^1.1",
-                "php": ">=5.5.0",
-                "psr/http-message": "^1.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.0",
-                "slim/slim": "~3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Slim\\Csrf\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Josh Lockhart",
-                    "email": "hello@joshlockhart.com",
-                    "homepage": "http://joshlockhart.com"
-                }
-            ],
-            "description": "Slim Framework 3 CSRF protection middleware",
-            "homepage": "http://slimframework.com",
-            "keywords": [
-                "csrf",
-                "framework",
-                "middleware",
-                "slim"
-            ],
-            "time": "2015-12-22 10:13:02"
         },
         {
             "name": "slim/slim",

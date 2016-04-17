@@ -1,6 +1,7 @@
 <?php
 namespace Memtext\Form;
 
+use Memtext\Model\User;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Memtext\Helper\HashGenerator;
 
@@ -24,14 +25,14 @@ class LoginForm extends AbstractForm
         $this->remember = isset($loginData['remember']);
     }
 
-    public function validatePassword($user = null)
+    public function validatePassword(User $user = null)
     {
         if ($user == null) {
             $this->errorMessage = self::USER_NOT_FOUND;
             return false;
         } elseif (
-            $user->saltedHash !==
-            HashGenerator::generateHash($user->salt, $this->password)
+            $user->getSaltedHash() !==
+            HashGenerator::generateHash($user->getSalt(), $this->password)
         ) {
             $this->errorMessage = self::WRONG_PASSWORD;
             return false;

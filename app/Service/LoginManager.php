@@ -10,10 +10,12 @@ class LoginManager
 {
     private $repo;
     private $loggedUser;
+    private $token;
 
-    public function __construct(EntityRepository $repo) {
+    public function __construct(EntityRepository $repo, $token) {
         $this->repo = $repo;
         $this->loggedUser = $this->getLoggedUser();
+        $this->token = $token;
     }
 
     public function getLoggedUser()
@@ -98,5 +100,15 @@ class LoginManager
             return true;
         }
         return false;
+    }
+
+    public function checkToken($formToken)
+    {
+        return $this->token === $formToken;
+    }
+
+    public function getToken()
+    {
+        return $this->token;
     }
 }

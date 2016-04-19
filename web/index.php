@@ -20,8 +20,7 @@ use Memtext\Helper\TextParser;
 use Memtext\Model\Text;
 use Slim\App;
 
-require '../vendor/autoload.php';
-require '../config/settings.php';
+require "../app/bootstrap.php";
 
 $token = Csrf::init();
 
@@ -31,22 +30,8 @@ $container = $app->getContainer();
 
 $container['csrf_token'] = $token;
 
-$container['entityManager'] = function ($c) {
-    $devMode = true;
-    $config = Setup::createYAMLMetadataConfiguration(
-        [dirname(__DIR__) . "/config/yaml"],
-        $devMode
-    );
-    $db = $c['settings']['db'];
-    $conn = [
-        'host' => $db['host'],
-        'dbname' => $db['dbname'],
-        'user' => $db['user'],
-        'pass' => $db['pass'],
-        'driver' => $db['driver'],
-    ];
-    return EntityManager::create($conn, $config);
-};
+// obtain em from bootstrap.php
+$container['entityManager'] = $em;
 
 $container['sphinx_conn'] = function ($c) {
     $dbalConfig = new Configuration();

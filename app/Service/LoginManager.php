@@ -26,7 +26,9 @@ class LoginManager
             return null;
         }
         $user = $this->repo->find($id);
-        if ($user->getSaltedHash() != $hash) {
+        if (!$user) {
+            return null;
+        } elseif ($user->getSaltedHash() != $hash) {
             return null;
         }
         return $user;

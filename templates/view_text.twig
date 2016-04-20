@@ -12,13 +12,15 @@
       <a href="/test/{{ text.getId() }}"
          class="btn btn-success pull-right">Пройти тест</a>
     </section>
-    {% for dict in text.getFulldicts() %}
-      <section class="dictionary">
-        <h2 class="text-primary">{{ dict.getKeyword() }}</h2>
-        <article>
-          <table>{{ dict.getDefinition()|raw }}</table>
-        </article>
-      </section>
-    {% endfor %}
+    <div class="dictionary">
+      {% for word in text.getWords() %}
+        {% if word.getType() is same as ('full') %}
+        <section class="word">
+          <h2 class="text-primary">{{ word.getKeyword() }}</h2>
+          <article>{{ word.getDefinition()|raw }}</article>
+        </section>
+        {% endif %}
+      {% endfor %}
+    </div>
   </div>
 {% endblock content %}

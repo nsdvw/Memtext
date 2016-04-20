@@ -25,14 +25,7 @@ $app->get('/', function (Request $request, Response $response) {
         $userId = $this->loginManager->getUserId();
         $currentPage = $request->getQueryParam('page')
                        ? $request->getQueryParam('page') : 1;
-        $em = $this->entityManager;
-        $qb = $em->createQueryBuilder();
-        $query = $qb->select('COUNT(t)')
-            ->from('Memtext:Text', 't')
-            ->where('t.author=:id')
-            ->setParameter('id', $userId)
-            ->getQuery();
-        $textsCount = $query->getSingleScalarResult();
+        $textsCount = $this->textService->getUserTextCount($userId);
         $pagerSettings = $this->settings['pager'];
 
         $pager = new Pager(
@@ -69,12 +62,7 @@ $app->get('/test/{id}', function (Request $request, Response $response) {
 
 $app->get('/text/view/{id}', function (Request $request, Response $response) {
     $textId = $request->getAttribute('id');
-    $dql = "SELECT t, w FROM Memtext:Text t JOIN t.words w"
-           . " WHERE t.id=?1";
-    $query = $this->entityManager->createQuery($dql);
-    $query->setParameter(1, $textId);
-    $textWithWords = $query->getResult()[0];
-
+    $textWithWords = $this->textService->getTextWithWords($textId);
     return $this->view->render(
         $response, 'view_text.twig', ['text' => $textWithWords]
     );

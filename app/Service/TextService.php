@@ -43,4 +43,24 @@ class TextService
         $this->entityManager->persist($text);
         $this->entityManager->flush();
     }
+
+    public function getUserTextCount($userId)
+    {
+        $em = $this->entityManager;
+        $qb = $em->createQueryBuilder();
+        $query = $qb->select('COUNT(t)')
+            ->from('Memtext:Text', 't')
+            ->where('t.author=:id')
+            ->setParameter('id', $userId)
+            ->getQuery();
+        return $query->getSingleScalarResult();
+    }
+
+    public function getTextWithWords($textId)
+    {
+        $dql = "SELECT t, w FROM Memtext:Text t JOIN t.words w WHERE t.id=?1";
+        $query = $this->entityManager->createQuery($dql);
+        $query->setParameter(1, $textId);
+        return $query->getResult()[0];
+    }
 }

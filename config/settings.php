@@ -13,8 +13,7 @@ $settings['db'] = [
 $settings['sphinx'] = [
     'host' => '127.0.0.1',
     'port' => 9306,
-    'short_index' => 'ix_short',
-    'full_index' => 'ix_full',
+    'indexName' => 'ix_dictionary',
 ];
 
 $settings['pager'] = [

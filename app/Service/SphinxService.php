@@ -3,41 +3,36 @@ namespace Memtext\Service;
 
 use Memtext\Mapper\SphinxMapper;
 
+/**
+ * Class SphinxService
+ * @package Memtext\Service
+ */
 class SphinxService
 {
     /**
      * @var SphinxMapper
      */
     private $mapper;
+
     /**
      * @var string
      */
-    private $shortDictIxName;
-    /**
-     * @var string
-     */
-    private $fullDictIxName;
+    private $indexName;
 
     /**
      * @param SphinxMapper $mapper
+     * @param string $indexName
      */
     public function __construct(
         SphinxMapper $mapper,
-        $shortDictIxName,
-        $fullDictIxName
+        $indexName
     ) {
         $this->mapper = $mapper;
-        $this->shortDictIxName = $shortDictIxName;
-        $this->fullDictIxName = $fullDictIxName;
+        $this->indexName = $indexName;
     }
 
-    public function findInShortDict(array $words)
+    public function find(array $words)
     {
-        return $this->mapper->find($words, $this->shortDictIxName);
-    }
-
-    public function findInFullDict(array $words)
-    {
-        return $this->mapper->find($words, $this->fullDictIxName);
+        return $this->mapper->find($words, $this->indexName);
     }
 }

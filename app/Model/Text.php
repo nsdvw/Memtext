@@ -3,33 +3,55 @@ namespace Memtext\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
+/**
+ * Class Text
+ * @package Memtext\Model
+ *
+ * @Entity
+ * @Table(name="text")
+ */
 class Text
 {
     /**
      * @var int
+     *
+     * @Id @Column(type="integer")
+     * @GeneratedValue(strategy="AUTO")
      */
     private $id;
+
     /**
      * @var string
+     *
+     * @Column(type="text")
      */
     private $content;
+
     /**
      * @var string
+     *
+     * @Column(type="string")
      */
     private $title;
+
     /**
      * @var User
+     *
+     * @ManyToOne(targetEntity="User", inversedBy="texts")
      */
     private $author;
 
     /**
      * @var ArrayCollection
+     *
+     * @ManyToMany(targetEntity="Word")
+     * @JoinTable(
+     *   name="text_dictionary",
+     *   joinColumns={@JoinColumn(name="text_id", referencedColumnName="id")}),
+     *   inverseJoinColumns={@JoinColumn(name="word_id", referencedColumnName="id")}
+     * )
      */
-    private $shortdicts;
-    /**
-     * @var ArrayCollection
-     */
-    private $fulldicts;
+    private $words;
 
     /**
      * @return int
@@ -41,8 +63,7 @@ class Text
 
     public function __construct()
     {
-        $this->shortdicts = new ArrayCollection();
-        $this->fulldicts = new ArrayCollection();
+        $this->words = new ArrayCollection();
     }
 
     /**
@@ -97,19 +118,22 @@ class Text
     /**
      * @return ArrayCollection
      */
-    public function getShortdicts()
+    public function getWords()
     {
-        return $this->shortdicts;
+        return $this->words;
     }
 
     /**
      * @return array
      */
-    public function getShortdictsArray()
+    public function getShortWordsArray()
     {
-        $entities = $this->shortdicts->toArray();
+        $entities = $this->words->toArray();
         $words = [];
         foreach ($entities as $entity) {
+            if ($entity->getType() != 'short') {
+                continue;
+            }
             $words[$entity->getKeyword()] = $entity->getDefinition();
         }
         return $words;
@@ -118,28 +142,10 @@ class Text
     /**
      * @param array $words
      */
-    public function setShortdicts(array $words)
+    public function setWords(array $words)
     {
         foreach ($words as $word) {
-            $this->shortdicts[] = $word;
-        }
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getFulldicts()
-    {
-        return $this->fulldicts;
-    }
-
-    /**
-     * @param array $words
-     */
-    public function setFulldicts(array $words)
-    {
-        foreach ($words as $word) {
-            $this->fulldicts[] = $word;
+            $this->words[] = $word;
         }
     }
 }

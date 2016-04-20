@@ -1,22 +1,13 @@
 <?php
 
-use Doctrine\DBAL\Configuration;
-use Doctrine\DBAL\DriverManager;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\Setup;
 use Memtext\Form\LogoutForm;
 use Memtext\Helper\Csrf;
-use Memtext\Mapper\SphinxMapper;
-use Memtext\Service\TextService;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Memtext\Form\LoginForm;
 use Memtext\Form\RegisterForm;
 use Memtext\Form\TextForm;
-use Memtext\Service\LoginManager;
-use Memtext\Handler\NotFoundHandler;
 use Memtext\Helper\Pager;
-use Memtext\Helper\TextParser;
 use Memtext\Model\Text;
 use Slim\App;
 
@@ -26,82 +17,7 @@ $token = Csrf::init();
 
 $app = new App(['settings' => $settings]);
 
-$container = $app->getContainer();
-
-$container['csrf_token'] = $token;
-
-// obtain em from bootstrap.php
-$container['entityManager'] = $em;
-
-$container['sphinx_conn'] = function ($c) {
-    $dbalConfig = new Configuration();
-    $sphinx_config = $c['settings']['sphinx'];
-    $driver = $c['settings']['db']['driver'];
-    $connectionParams = [
-        'host' => $sphinx_config['host'],
-        'port' => $sphinx_config['port'],
-        'driver' => $driver,
-    ];
-    return DriverManager::getConnection(
-        $connectionParams,
-        $dbalConfig
-    );
-};
-
-$container['sphinxMapper'] = function ($c) {
-    return new SphinxMapper($c['sphinx_conn']);
-};
-
-$container['loginManager'] = function ($c) {
-    return new LoginManager(
-        $c['entityManager']->getRepository('\Memtext\Model\User'),
-        $c['csrf_token']
-    );
-};
-
-$container['purifier'] = function ($c) {
-    $config = \HTMLPurifier_Config::createDefault();
-    $settings = $c['settings']['purifier'];
-    foreach ($settings as $key => $value) {
-        $config->set($key, $value);
-    }
-    return new \HTMLPurifier($settings);
-};
-
-$container['textParser'] = new TextParser;
-
-$container['textService'] = function ($c) {
-    return new TextService(
-        $c['textParser'],
-        $c['entityManager'],
-        $c['sphinxService']
-    );
-};
-
-$container['sphinxService'] = function ($c) {
-    $sphinxConfig = $c['settings']['sphinx'];
-    return new \Memtext\Service\SphinxService(
-        $c['sphinxMapper'],
-        $sphinxConfig['short_index'],
-        $sphinxConfig['full_index']
-    );
-};
-
-$container['view'] = function ($c) {
-    $view = new \Slim\Views\Twig('../templates');
-    $view->addExtension(new \Twig_Extensions_Extension_Text());
-    $view['loginManager'] = $c['loginManager'];
-    $view['csrf_token'] = $c['csrf_token'];
-    return $view;
-};
-
-$container['notFoundHandler'] = function ($c) {
-    return new NotFoundHandler(
-        $c['view'],
-        function (Request $request, Response $response) use ($c) {
-            return $c['response']->withStatus(404);
-    });
-};
+require "../app/container.php";
 
 $app->get('/', function (Request $request, Response $response) {
 
@@ -112,7 +28,7 @@ $app->get('/', function (Request $request, Response $response) {
         $em = $this->entityManager;
         $qb = $em->createQueryBuilder();
         $query = $qb->select('COUNT(t)')
-            ->from('\Memtext\Model\Text', 't')
+            ->from('Memtext:Text', 't')
             ->where('t.author=:id')
             ->setParameter('id', $userId)
             ->getQuery();
@@ -126,7 +42,7 @@ $app->get('/', function (Request $request, Response $response) {
             $pagerSettings['maxLinksCount']
         );
 
-        $userTexts = $this->entityManager->getRepository('\Memtext\Model\Text')
+        $userTexts = $this->entityManager->getRepository('Memtext:Text')
             ->findBy(
                 ['author'=>$userId],
                 null,
@@ -143,22 +59,22 @@ $app->get('/', function (Request $request, Response $response) {
 
 $app->get('/test/{id}', function (Request $request, Response $response) {
     $textId = $request->getAttribute('id');
-    $text = $this->entityManager->find('\Memtext\Model\Text', $textId);
+    $text = $this->entityManager->find('Memtext:Text', $textId);
     return $this->view->render(
         $response,
         'test.twig',
-        ['words' => $text->getShortDictsArray(), 'textId' => $textId]
+        ['words' => $text->getShortWordsArray(), 'textId' => $textId]
     );
 });
 
 $app->get('/text/view/{id}', function (Request $request, Response $response) {
     $textId = $request->getAttribute('id');
-    $textRepo = $this->entityManager->getRepository('\Memtext\Model\Text');
-    $dql = "SELECT t, f, s FROM Memtext\Model\Text t JOIN t.fulldicts f"
-           . " JOIN t.shortdicts s WHERE t.id=?1";
+    $dql = "SELECT t, w FROM Memtext:Text t JOIN t.words w"
+           . " WHERE t.id=?1";
     $query = $this->entityManager->createQuery($dql);
     $query->setParameter(1, $textId);
     $textWithWords = $query->getResult()[0];
+
     return $this->view->render(
         $response, 'view_text.twig', ['text' => $textWithWords]
     );
@@ -166,7 +82,7 @@ $app->get('/text/view/{id}', function (Request $request, Response $response) {
 
 $app->post('/text/delete/{id}', function (Request $request, Response $response) {
     $textId = $request->getAttribute('id');
-    $text = $this->entityManager->find('\Memtext\Model\Text', $textId);
+    $text = $this->entityManager->find('Memtext:Text', $textId);
     if ($this->loginManager->isOwner($text->getAuthor()->getId())) {
         $this->entityManager->remove($text);
         $this->entityManager->flush();

@@ -4,31 +4,25 @@ CREATE TABLE `user`
     `login` VARCHAR(100) NOT NULL,
     `email` VARCHAR(255) NOT NULL,
     `salt` VARCHAR(255) NOT NULL,
-    `saltedHash` VARCHAR(255) NOT NULL
+    `salted_hash` VARCHAR(255) NOT NULL
 ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-CREATE TABLE `shortdict`
+CREATE TABLE `dictionary`
 (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `keyword` VARCHAR(255) NOT NULL,
-    `definition` TEXT NOT NULL
+    `definition` TEXT NOT NULL,
+    `type` ENUM('short', 'full') NOT NULL DEFAULT 'full'
 ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-CREATE TABLE `fulldict`
-(
-    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `keyword` VARCHAR(255) NOT NULL,
-    `definition` TEXT NOT NULL
-) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
-CREATE TABLE `user_shortdict`
+CREATE TABLE `user_dictionary`
 (
     `user_id` INT UNSIGNED NOT NULL,
-    `shortdict_id` INT UNSIGNED NOT NULL,
-    PRIMARY KEY (`user_id`, `shortdict_id`),
+    `word_id` INT UNSIGNED NOT NULL,
+    PRIMARY KEY (`user_id`, `word_id`),
     FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
       ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (`shortdict_id`) REFERENCES `shortdict` (`id`)
+    FOREIGN KEY (`word_id`) REFERENCES `dictionary` (`id`)
       ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -42,24 +36,13 @@ CREATE TABLE `text`
         ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-CREATE TABLE `text_shortdict`
+CREATE TABLE `text_dictionary`
 (
     `text_id` INT UNSIGNED NOT NULL,
-    `shortdict_id` INT UNSIGNED NOT NULL,
-    PRIMARY KEY (`text_id`, `shortdict_id`),
+    `word_id` INT UNSIGNED NOT NULL,
+    PRIMARY KEY (`text_id`, `word_id`),
     FOREIGN KEY (`text_id`) REFERENCES `text` (`id`)
-      ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (`shortdict_id`) REFERENCES `shortdict` (`id`)
-      ON UPDATE CASCADE ON DELETE CASCADE
-) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
-CREATE TABLE `text_fulldict`
-(
-    `text_id` INT UNSIGNED NOT NULL,
-    `fulldict_id` INT UNSIGNED NOT NULL,
-    PRIMARY KEY (`text_id`, `fulldict_id`),
-    FOREIGN KEY (`text_id`) REFERENCES `text` (`id`)
-      ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (`fulldict_id`) REFERENCES `fulldict` (`id`)
-      ON UPDATE CASCADE ON DELETE CASCADE
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (`word_id`) REFERENCES `dictionary` (`id`)
+        ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

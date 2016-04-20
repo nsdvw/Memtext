@@ -26,10 +26,9 @@ class TextService
         $textContent = strip_tags($text->getContent());
         $words = $this->parser->parse($textContent);
 
-        $shortIds = $this->sphinxService->findInShortDict($words);
-        $fullIds = $this->sphinxService->findInFullDict($words);
-        $shortFounded = $this->findShortWords($shortIds);
-        $fullFounded = $this->findFullWords($fullIds);
+        $wordsIds = $this->sphinxService->find($words);
+        $repo = $this->entityManager->getRepository('Memtext:Word');
+        $words = $repo->findById($wordsIds);
 
         $filter = function ($word) use ($textContent) {
             if (strpos($textContent, $word->getKeyword()) === false) {
@@ -38,26 +37,10 @@ class TextService
                 return true;
             }
         };
-        $shortFounded = array_filter($shortFounded, $filter);
-        $fullFounded = array_filter($fullFounded, $filter);
+        $words = array_filter($words, $filter);
 
-        $text->setShortdicts($shortFounded);
-        $text->setFulldicts($fullFounded);
+        $text->setWords($words);
         $this->entityManager->persist($text);
         $this->entityManager->flush();
-    }
-
-    private function findShortWords(array $ids)
-    {
-        $entity = '\Memtext\Model\ShortDict';
-        $repo = $this->entityManager->getRepository($entity);
-        return $repo->findById($ids);
-    }
-
-    private function findFullWords(array $ids)
-    {
-        $entity = '\Memtext\Model\FullDict';
-        $repo = $this->entityManager->getRepository($entity);
-        return $repo->findById($ids);
     }
 }

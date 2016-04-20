@@ -7,10 +7,11 @@ require "../vendor/autoload.php";
 require "../config/settings.php";
 
 $devMode = true;
-$config = Setup::createYAMLMetadataConfiguration(
-    ["../config/yaml"],
+$config = Setup::createAnnotationMetadataConfiguration(
+    [__DIR__ . "/Model"],
     $devMode
 );
+$config->addEntityNamespace('Memtext', 'Memtext\Model');
 
 $db = $settings['db'];
 $conn = [

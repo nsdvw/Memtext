@@ -15,7 +15,7 @@ class SphinxMapper
     public function find(array $words, $indexName)
     {
         $sql = "SELECT id FROM {$indexName} WHERE MATCH(?) LIMIT 10000".
-                "OPTION ranker=sph04";
+                "OPTION ranker=sph04, max_matches=10000";
         $conn = $this->connection;
         $sth = $conn->prepare($sql);
         $sth->execute([ join('|', $words) ]);

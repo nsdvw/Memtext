@@ -36,6 +36,8 @@ $ mysql -uusername -ppassword memtext < schema/mysql.sql
 
 1. If needed, change config like dbname etc in settings.php.
 
+1. Configure sphinx. Configuration sample added in `config/sphinx.conf`.
+
 If you are a windows user, you need to manually copy some files listed in
 scripts/post-update-cmd.sh from vendor dir to their destination in public dir.
 

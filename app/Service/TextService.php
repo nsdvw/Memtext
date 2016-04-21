@@ -23,23 +23,16 @@ class TextService
 
     public function saveWithDictionary(Text $text)
     {
-        $textContent = strip_tags($text->getContent());
-        $words = $this->parser->parse($textContent);
+        $words = $this->parseText($text);
 
-        $wordsIds = $this->sphinxService->find($words);
-        $repo = $this->entityManager->getRepository('Memtext:Word');
-        $words = $repo->findById($wordsIds);
+        $hits = $this->findHits($words);
 
-        $filter = function ($word) use ($textContent) {
-            if (strpos($textContent, $word->getKeyword()) === false) {
-                return false;
-            } else {
-                return true;
-            }
-        };
-        $words = array_filter($words, $filter);
+        $hits = $this->filterHits($hits, $text->getContent());
 
-        $text->setWords($words);
+        $refs = $this->getReferences($hits);
+
+        $text->setWords($refs);
+
         $this->entityManager->persist($text);
         $this->entityManager->flush();
     }
@@ -62,5 +55,39 @@ class TextService
         $query = $this->entityManager->createQuery($dql);
         $query->setParameter(1, $textId);
         return $query->getResult()[0];
+    }
+
+    private function parseText(Text $text)
+    {
+        $textContent = strip_tags($text->getContent());
+        return $this->parser->parse($textContent);
+    }
+
+    private function findHits(array $words)
+    {
+        return $this->sphinxService->find($words);
+    }
+
+    private function filterHits(array $hits, $textContent)
+    {
+        $filter = function ($word) use ($textContent) {
+            if (strpos($textContent, $word['word']) === false) {
+                return false;
+            } else {
+                return true;
+            }
+        };
+
+        return array_filter($hits, $filter);
+    }
+
+    private function getReferences(array $hits)
+    {
+        $refs = [];
+        $em = $this->entityManager;
+        foreach ($hits as $hit) {
+            $refs[] = $em->getPartialReference('Memtext:Word', $hit['id']);
+        }
+        return $refs;
     }
 }

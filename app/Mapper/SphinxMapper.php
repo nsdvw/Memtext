@@ -14,15 +14,12 @@ class SphinxMapper
 
     public function find(array $words, $indexName)
     {
-        $sql = "SELECT id FROM {$indexName} WHERE MATCH(?) LIMIT 10000".
+        $sql = "SELECT id, word, type FROM {$indexName} WHERE MATCH(?) LIMIT 10000".
                 "OPTION ranker=sph04, max_matches=10000";
         $conn = $this->connection;
         $sth = $conn->prepare($sql);
         $sth->execute([ join('|', $words) ]);
         $ids = [];
-        while ($id = $sth->fetchColumn()) {
-            $ids[] = $id;
-        }
-        return $ids;
+        return $sth->fetchAll();
     }
 }

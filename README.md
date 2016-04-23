@@ -38,6 +38,8 @@ $ mysql -uusername -ppassword memtext < schema/mysql.sql
 
 1. Configure sphinx. Configuration sample added in `config/sphinx.conf`.
 
+### Tips
+
 If you are a windows user, you need to manually copy some files listed in
 scripts/post-update-cmd.sh from vendor dir to their destination in public dir.
 
@@ -45,3 +47,19 @@ Where to get dictionaries?
 From xdxf repositories http://dicto.org.ru/xdxf.html, or StarDict, GoldenDict etc.
 http://getfr.no-ip.org/pub/dc/software/stardict-ru/
 https://sites.google.com/site/gtonguedict/home/stardict-dictionaries
+
+To improve mysql performance while bulk loading (when loading dictionary data to
+the table) you can disable keys and autocommit at the beginning of the dump-file.
+
+Some big xdxf dictionaries contain not only words, but a lot of collocations,
+therefore sphinxsearch will find tons of hits. You can remove some frequent words
+from index by `stopwords` option in sphinxconf. So first one need to index
+`keyword` column of the `dictionary` table, then call
+```
+indexer index_name --buildstops /path/to/stopwords.txt 1000
+```
+Then add to sphinx.conf
+```
+stopwords = /path/to/stopwords.txt
+```
+And reindex `keyword` column again.

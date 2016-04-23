@@ -12,7 +12,8 @@ CREATE TABLE `dictionary`
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `keyword` VARCHAR(255) NOT NULL,
     `definition` TEXT NOT NULL,
-    `type` ENUM('short', 'full') NOT NULL DEFAULT 'full'
+    `type` ENUM('short', 'full') NOT NULL DEFAULT 'full',
+    KEY (`keyword`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 CREATE TABLE `user_dictionary`

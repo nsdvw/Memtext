@@ -2,6 +2,7 @@
 namespace Memtext\Service;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\DBAL\Connection;
 use Memtext\Helper\TextParser;
 use Memtext\Model\Text;
 
@@ -24,15 +25,9 @@ class TextService
     public function saveWithDictionary(Text $text)
     {
         $words = $this->parseText($text);
+        $references = $this->createDictionary($words, $text);
 
-        $hits = $this->findHits($words);
-
-        $hits = $this->filterHits($hits, $text->getContent());
-
-        $refs = $this->getReferences($hits);
-
-        $text->setWords($refs);
-
+        $text->setWords($references);
         $this->entityManager->persist($text);
         $this->entityManager->flush();
     }
@@ -81,13 +76,53 @@ class TextService
         return array_filter($hits, $filter);
     }
 
-    private function getReferences(array $hits)
+    private function getReferences(array $ids)
     {
         $refs = [];
         $em = $this->entityManager;
-        foreach ($hits as $hit) {
-            $refs[] = $em->getPartialReference('Memtext:Word', $hit['id']);
+        foreach ($ids as $id) {
+            $refs[] = $em->getReference('Memtext:Word', $id);
         }
         return $refs;
+    }
+
+    private function createDictionary(array $words, Text $text)
+    {
+        $references = [];
+        $stopWords = [];
+        $ids = [];
+
+        foreach ($words as $word) {
+            $hits = $this->findHits([$word]);
+            if (!$hits) {
+                $stopWords[] = $word;
+                continue;
+            }
+            $hits = $this->filterHits($hits, $text->getContent());
+            $ids = array_merge($ids, $this->getHitsIds($hits));
+        }
+        $references = $this->getReferences(array_unique($ids));
+        $fromDb = $this->findInDb($stopWords);
+
+        return array_merge($references, $fromDb);
+    }
+
+    private function getHitsIds(array $hits)
+    {
+        $ids = [];
+        foreach ($hits as $hit) {
+            $ids[] = $hit['id'];
+        }
+        return array_unique($ids);
+    }
+
+    private function findInDb(array $stopWords)
+    {
+        $dql = "SELECT w.id FROM dictionary w WHERE w.keyword IN (?)";
+        $conn = $this->entityManager->getConnection();
+        $stmt = $conn->executeQuery($dql, [$stopWords], [Connection::PARAM_STR_ARRAY]);
+        $hits = $stmt->fetchAll();
+        $ids = $this->getHitsIds($hits);
+        return $this->getReferences(array_unique($ids));
     }
 }

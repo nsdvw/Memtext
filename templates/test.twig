@@ -18,13 +18,15 @@
       <p class="alert alert-info lead"><strong id="question"></strong></p>
 
       <div class="row answer-form">
-        <div class="col-xs-12 col-md-9">
-          <input type="text" autofocus id="userAnswer" class="form-control">
-        </div>
-        <div class="col-xs-3 clearfix confirm-container">
-          <button type="button" id="confirmButton"
-                  class="btn btn-success btn-block pull-right">ответить</button>
-        </div>
+        <form action="" id="confirmForm">
+          <div class="col-xs-12 col-md-9">
+            <input type="text" autofocus id="userAnswer" class="form-control">
+          </div>
+          <div class="col-xs-3 clearfix confirm-container">
+            <button type="submit" id="confirmButton"
+                    class="btn btn-success btn-block pull-right">ответить</button>
+          </div>
+        </form>
       </div>
 
       <p class="alert alert-danger lead right-answer"><em id="rightAnswer"></em></p>

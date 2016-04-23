@@ -21,9 +21,8 @@ var progressBar = $("#progressBar");
 
 putToHtml(testWords);
 
-var confirm = $("#confirmButton");
-confirm.on("click", confirmHandler);
-userAnswer.on("keypress", pressingEnter);
+var confirmForm = $("#confirmForm");
+confirmForm.on("submit", confirmHandler);
 
 
 function getTestWords() {
@@ -44,7 +43,8 @@ function putToHtml(testWords) {
     rightAnswer.text(wordPair[0]);
 }
 
-function confirmHandler() {
+function confirmHandler(e) {
+    e.preventDefault();
     answerContainer.hide();
     attempts++;
     if (userAnswer.val() == rightAnswer.text()) {
@@ -59,12 +59,6 @@ function confirmHandler() {
         answerContainer.show();
     }
     userAnswer.val('');
-}
-
-function pressingEnter(e) {
-    if (e.charCode == 13) {
-        confirmHandler();
-    }
 }
 
 function showResults() {
